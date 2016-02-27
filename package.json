@@ -1,0 +1,19 @@
+{
+  "name": "huntr",
+  "version": "1.0.0",
+  "description": "job application management application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpencerLee/Huntr.git"
+  },
+  "author": "spencer lee, rennie haylock, samir marin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SpencerLee/Huntr/issues"
+  },
+  "homepage": "https://github.com/SpencerLee/Huntr#readme"
+}
