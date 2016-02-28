@@ -5,6 +5,8 @@ var DragSource = require('react-dnd').DragSource;
 var HTML5Backend = require('react-dnd-html5-backend');
 var Store     = require('../data/store');
 var CompanyDropDown   = require('./CompanyDropDown.jsx');
+var Glassdoor = require('../api/request/glassdoorRequest');
+
 
 var NewJobForm    = React.createClass({
   getInitialState: function() {
@@ -12,12 +14,7 @@ var NewJobForm    = React.createClass({
       companyName: '',
       company: null, 
       positionTitle: '', 
-      glassdoorCompanies: [
-        {name: "Google"},
-        {name: "Facebook"},
-        {name: "Amazon"},
-        {name: "Apple"},
-      ]};
+      glassdoorCompanies: []};
   },
   render: function() {
 
@@ -31,7 +28,7 @@ var NewJobForm    = React.createClass({
       <div>
         <div className="popupWhite" onClick={this.onBackGroundClick}>
         </div>
-        <form className="newJobForm" onSubmit={this.handleSubmit}>
+        <form autoComplete="off" className="newJobForm" onSubmit={this.handleSubmit}>
           <input value={this.state.companyName} onChange={this.handleCompanyChange} placeholder="Company" className="textField regularSize" type="text" name="companyName"/><br/>
           <input value={this.state.positionTitle} onChange={this.handlePositionChange} placeholder="Position" className="textField regularSize" type="text" name="positionTitle"/><br/>
           <input className="submitButton regularSize" type="submit" value="Create Job"/>
@@ -41,7 +38,7 @@ var NewJobForm    = React.createClass({
     );
   },
   onBackGroundClick: function() {
-    Store.setCreatingNewJob(false);
+    Store.setCreatingNewJob(false,null);
   },
   handleSubmit: function(e) {
     e.preventDefault();
@@ -52,14 +49,17 @@ var NewJobForm    = React.createClass({
     }
     // TODO: send request to the server
     
-    Store.addJob(company,positionTitle);
+    Store.addJob(this.props.listId,company,positionTitle);
     this.setState({company: null, positionTitle: ''});
-    Store.setCreatingNewJob(false);
+    Store.setCreatingNewJob(false,null);
   },
 
   handleCompanyChange: function(e) {
     console.log(e.target.value);
-    // TODO: Use Glassdoor api to populate companies
+    Glassdoor.getResponseForCompany(e.target.value, function(response) {
+      console.log(response);
+      this.setState({glassdoorCompanies: response});
+    }.bind(this));
     this.setState({companyName: e.target.value});
   },
 

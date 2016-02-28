@@ -8,7 +8,8 @@ var mockInitialState = require('./mockData_getInitialState')
 
 var store = {
     lists:[],
-    creatingNewJob: false
+    creatingNewJob: false,
+    creatingNewJobForList: null
   };
 
 
@@ -31,8 +32,10 @@ var Store = assign({}, EventEmitter.prototype, {
 
   // State
   // =======================
-  setCreatingNewJob: function(value) {
+  
+  setCreatingNewJob: function(value,listId) {
     store.creatingNewJob = value;
+    store.creatingNewJobForList = listId;
     this.emitChange();
   },
 
@@ -79,8 +82,37 @@ var Store = assign({}, EventEmitter.prototype, {
     return store.users;
   },
 
-  addJob: function(listId,company,positionTitle) {
-    
+  addJob: function(listId,newcompany,positionTitle) {
+    for (var idx in store.lists) {
+      var list = store.lists[idx];
+      if (list._id == listId) {
+        list.jobs.push({
+          _id:"3",
+          title:positionTitle,
+          company: {
+            name: newcompany.name,
+            icon_url: newcompany.squareLogo,
+            glassdoor_id: newcompany.id,
+            hex_color: "rgba(0,0,0,0.2)",
+          }
+        })
+      }
+    };
+    this.emitChange();
+  },
+  moveCard: function (indexOne,listOne,indexTwo,listTwo) {
+    if (listOne != listTwo) {
+      // Remove from one list and add it to the other
+      var tempJob = store.lists[listOne]["jobs"][indexOne];
+      store.lists[listTwo]["jobs"].splice(indexTwo,0,tempJob);
+      store.lists[listOne]["jobs"].splice(indexOne,1);
+    } else {
+      // Swap Them
+      var tempJob = store.lists[listOne]["jobs"][indexOne];
+      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo]
+      store.lists[listTwo]["jobs"][indexTwo] = tempJob;
+    }
+
     this.emitChange();
   },
   updateJob: function(id, updates) {

@@ -203,3 +203,7 @@ a {
 .header span.logo {
   color: #0039FF;
 }
+
+.listIcon {
+  width: 15px;
+}

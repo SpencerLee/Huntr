@@ -3,7 +3,18 @@
  * Created by samirmarin on 2016-02-27.
  */
 
-var request = require('request');
+// var request = require('request');
+
+var parameters = {
+    "v":    "1",
+    "format":"json",
+    "t.p":  "56346",
+    "t.k":  "evsFdSDtY2K",
+    "userip": "128.189.89.205",
+    "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36",
+    "action":"employers",
+    "callback":"?"
+  };
 
 var Glassdoor = {
   URL:       "https://api.glassdoor.com/api/api.htm?",
@@ -12,55 +23,31 @@ var Glassdoor = {
   PartnerID:    "56346",
   PartnerKey:   "evsFdSDtY2K",
   Action:       "employers",
-  parameters: {
-    "v":    "1",
-    "format":"json",
-    "t.p":  "56346",
-    "t.k":  "evsFdSDtY2K",
-    "userip": "0.0.0.0",
-    "useragent": "",
-    "action":"employers"
-  },
 
   getResponseForCompany: function(companySearch,callback) {
-
-    request(this.buildGlassDoorHttp(companySearch), function(error, response, body) {
-      if(!error) {
-        var employers = JSON.parse(body).response.employers;
-
-        if(employers && employers.length != 0){
-          var employer = employers[0];
-          var glassDoorInfo = {
-            website: employer.website,
-            logoUrl: employer.squareLogo,
-            rating: employer.overallRating,
-            name: employer.name
-          };
-          callback(glassDoorInfo);
-        } else {
-          callback(null);
-        }
-      } else {
-        callback(null);
-      }
+    $.getJSON(this.buildGlassDoorHttp(companySearch), function(jsonp){
+      var employers = [];
+      if (jsonp) {
+        employers = jsonp.response.employers
+      };
+      callback(employers);
     });
   },
 
   buildGlassDoorHttp: function(companySearch){
-    var glassDoorComponents = this.buildParams(this.parameters);
+    var glassDoorComponents = this.buildParams(parameters);
     return this.URL + glassDoorComponents + "q=" + companySearch;
   },
-  buildParams: function (object) {
+
+  buildParams: function (params) {
+    console.log(params);
     var res = "";
-    for (key in object) {
-      res += key + "=" + object[key] + "&";
-    }
+    for (var key in params) {
+      res += key + "=" + params[key] + "&";
+    };
     return res
   }
-};
 
-Glassdoor.getResponseForCompany("google", function(response) {
-  console.log(response);
-});
+};
 
 module.exports = Glassdoor;
