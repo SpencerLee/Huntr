@@ -1,8 +1,182 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  font: 14px "Source Sans Pro","Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+/* Font classes*/
+.light {
+  font-weight: 300;
+}
+
+.regular {
+  font-weight: 400;
+}
+
+.semiBold {
+  font-weight: 600;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.ultraBold {
+  font-weight: 900;
+}
+
+.regularSize {
+  font-size: 15px;
+}
+.largeSize {
+  font-size: 18px;
+}
+.xlargeSize {
+  font-size: 22px;
+}
+.smallSize {
+  font-size: 14px;
+}
+
+.xsmallSize {
+  font-size: 12px;
+}
+
+
+/* Utility Classes */
+.floatLeft {
+  position: relative;
+  float: left;
+}
+
+.seethrough30 {
+  opacity: 0.3;
+}
+.seethrough60 {
+  opacity: 0.6;
+}
+
+.seethrough75 {
+  opacity: 0.75;
+}
+
+.popupWhite {
+  background-color: rgba(242,242,242,0.9);
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  z-index: 1;
+}
+
+/* React Component Classes */
+
+.listName {
+  font-weight: 900;
+  margin-left: 25px;
+  letter-spacing: 1px;
+}
+
+.list {
+  display: block;
+  position: relative;
+  float: left;
+  padding: 50px 20px;
+  width: 270px;
+  border-right: solid 1px #E2E2E2
+}
+
+.listHeader {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  margin-left: 25px;
+}
+
+.listCount {
+  margin-left: 35px;
+}
+
+.jobCard {
+  width: 230px;
+  height: 35px;
+  margin-bottom: 3px;
+  padding: 20px;
+  color: white;
+  border-radius: 2px;
+}
+
+.jobCard img {
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+.jobCard p {
+  text-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+  margin: 0px 0px 0px 10px;
+}
+
+.newJobForm {
+  text-align: center;
+  padding-top: 200px;
+  position: absolute;
+  z-index: 2;
+  margin-left: 40%;
+}
+
+.textField {
+  width: 200px;
+  height: 20px;
+  border-style: none;
+  border-radius: 2px;
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+  margin-bottom: 8px;
+  padding: 10px;
+  font-family: "Source Sans Pro";
+}
+
+.submitButton {
+    width: 220px;
+    background-color: rgba(13,32,254,0.75);
+    border-style: none;
+    border-radius: 2px;
+    height: 40px;
+    color: white;
+    font-weight: 400;
+    font-family: "Source Sans Pro";
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+}
+
+.newJobButton {
+  border-style: none;
+  border-radius: 2px;
+  color: rgba(0,0,0,0.35);
+  width: 100%;
+  height: 60px;
+  background-color: #EFEFEF;
+  border: 1px dashed rgba(0,0,0,0.1);
+  font-family: "Source Sans Pro";
+  margin-top: 15px;
+}
+
+.newJobButton:hover {
+  background-color: #ddd;
+}
+
+.header {
+    height: 35px;
+    padding: 7px 0px 3px 20px;
+    position: absolute;
+    background-color: rgba(255,255,255,0.85);
+    z-index: 3;
+    width: 100%;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+}
+
+.header span.logo {
+  color: #0039FF;
 }
