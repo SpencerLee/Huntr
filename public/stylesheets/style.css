@@ -168,15 +168,59 @@ a {
 }
 
 .header {
-    height: 35px;
-    padding: 7px 0px 3px 20px;
-    position: absolute;
-    background-color: rgba(255,255,255,0.85);
-    z-index: 3;
-    width: 100%;
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+  height: 35px;
+  padding: 7px 0px 3px 20px;
+  position: absolute;
+  background-color: rgba(255,255,255,0.85);
+  z-index: 3;
+  width: 100%;
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+}
+
+.dropdownContainer {
+  position: relative;
+  background-color: white;
+  top: -91px;
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+  border-radius: 2px;
+  overflow: scroll;
+  height: 130px;
+}
+
+.dropdownContainer p {
+  margin: 0;
+  padding: 10px;
+  text-align: left;
+  height: 15px;
+  color: #ddd
+}
+
+.dropdownContainer p:hover {
+  background-color: #eee;
+  color: #ddd;
 }
 
 .header span.logo {
   color: #0039FF;
+}
+
+.listIcon {
+  width: 15px;
+}
+
+.largeLogo {
+  font-size: 50px;
+  color: #0039FF;
+  text-align: center;
+  padding-top: 120px;
+}
+
+.subTitle {
+  font-size: 22px;
+  text-align: center;
+}
+
+.screenshotContainer {
+    text-align: center;
+    padding-top: 200px
 }
