@@ -10,14 +10,13 @@ var Company = require('../models/Company');
 
 
 
+/* DASHBOARD REQUESTS */
+
 /* initial GET dashboard info with board, lists, jobs for a given userId */
 router.get('/dashboard/:userId', function(req,res,next){
-	 var userId = req.params.userId;
-	 console.log(userId);
-	var dash;
-
+	var userId = req.params.userId;
+	console.log(userId);
 	Board.findOne({"user": userId}, function(err, board){
-		
 		if(err) return handleError(err);
 		if(board){
 			console.log("BoardId: " + board._id);
@@ -31,13 +30,15 @@ router.get('/dashboard/:userId', function(req,res,next){
 					else{
 						var promises = lists.map(function(list){
 							return new Promise(function(resolve,reject){
-								var list = list;
+								console.log(list);
 								Job.find({"list": list._id}, function(err,jobs){
-								if(err) return handleError(err);
-								if(jobs){
-									completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
-								}
-								resolve();
+									if(err) return handleError(err);
+									if(jobs){
+										console.log(jobs);
+										completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
+									}
+									console.log("resolving promise");
+									resolve();
 								})
 							})
 						})
@@ -45,9 +46,7 @@ router.get('/dashboard/:userId', function(req,res,next){
 							console.log(completeLists);
 							res.send({boardId: board._id, lists: completeLists});
 						})
-
 					}
-						
 				}
 			})
 		}
@@ -55,9 +54,7 @@ router.get('/dashboard/:userId', function(req,res,next){
 			res.send("NONONO");
 		}
 	})
-	
 });
-
 
 /* Delete all documents in all models */
 router.delete('/DeleteAll', function(req,res,next){
@@ -81,8 +78,6 @@ router.delete('/DeleteAll', function(req,res,next){
 	});
 	res.send("congratulations you've deleted everything");
 });
-
-
 
 /* POST  new user info: name, email, username, password */
 router.post('/user', function(req,res,next){
@@ -136,7 +131,7 @@ router.post('/board', function(req,res,next){
 
 /* GET board given boardId*/
 router.get("/board", function(req,res,next){
-	Board.findOne({_.id: req.query.boardId}, function(err, board){
+	Board.findOne({_id: req.query.boardId}, function(err, board){
 		if(err) return handleError(err);
 		if(board){
 			console.log(board);
@@ -153,7 +148,7 @@ router.get("/board", function(req,res,next){
 
 /*  POST a new list with given parameters */
 router.post("/list", function(req,res,next){
-	console.log(req.body); 
+	console.log(req.body);
 	List.create({name: req.body.name, iconName: req.body.iconName, board: req.body.board}, function(err,list){
 		if(err) return handleError(err);
 		if(list) {
@@ -182,13 +177,13 @@ router.get("/list", function(req,res,next){
 
 /* DELETE a list with a given listId */
 router.delete("/list",function(req,res,next){
-	List.remove({_.id: req.body.listId}, function(err){
+	List.remove({_id: req.body.listId}, function(err){
 		if(err) return handleError(err);
 		res.send("removed lists with no name");
-		}
+
+		
 	})
 });
-
 
 /* POST a new compnay with given parameters */
 router.post("/company", function(req,res,next){
@@ -196,7 +191,7 @@ router.post("/company", function(req,res,next){
 	Company.create({"name": req.body.name, "logoUrl": req.body.logoUrl, "hexColor": req.body.hexColor, "glassdoorId": req.body.glassdoorId, "glassdoorKey": req.body.glassdoorKey, "location": req.body.location}, function(err,company){
 		if(err) return handleError(err);
 		if(company){
-		 	console.log(company);
+			console.log(company);
 			res.send(company);
 		}
 		else{
@@ -216,7 +211,7 @@ router.get('/company', function(req,res,next){
 			res.send(company);
 		}
 	})
-	
+
 });
 
 
@@ -224,8 +219,9 @@ router.get('/company', function(req,res,next){
 router.post("/job", function(req,res,next){
 	Job.create({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company}, function(err,job){
 		if(err) return handleError(err);
-		if(job){ console.log(job.jobTitle);
-		res.send(job);
+		if(job){ 
+			console.log(job.jobTitle);
+			res.send(job);
 		}
 	})
 
@@ -235,12 +231,11 @@ router.post("/job", function(req,res,next){
 router.get('/job', function(req,res,next){
 	Job.find({_id: req.query.jobId}, function(err, job){
 		if(err) return handleError(err);
-		if(job){ 
+		if(job){
 			console.log(job);
 			res.send(job);
 		}
 	})
-	
 });
 
 
@@ -256,11 +251,6 @@ router.put('/job',function(req,res,next){
 			})
 		}
 	})
-})
-
-
-
-
-
+});
 
 module.exports = router;
