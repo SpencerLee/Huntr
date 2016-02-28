@@ -16,14 +16,13 @@ var buttonTarget = {
     var dragIndex = monitor.getItem().originalCardIndex;
     var dragList = monitor.getItem().originalListIndex;
     var hoverIndex = 0;
-    var hoverList = props.listId;
+    var hoverList = props.listIndex;
     console.log("Drop info");
     console.log(dragIndex);
     console.log(dragList);
     console.log(hoverIndex);
     console.log(hoverList);
     Store.moveCard(dragIndex,dragList, hoverIndex,hoverList);
-
   }
 };
 

@@ -23,7 +23,7 @@ var List    = React.createClass({
         {jobs.map(function(job,idx) {
             return <JobCard listIndex={listIndex} indexInList={idx} company={job.company} title={job.title} color={job.company.hex_color} cities={job.cities} />
         })}
-        <NewJobButton listId={this.props.listIndex}/>
+        <NewJobButton listId={this.props.listId} listIndex={this.props.listIndex}/>
       </div>
     );
   },

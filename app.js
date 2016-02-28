@@ -11,7 +11,6 @@ var api = require('./routes/api');
 
 var app = express();
 
-
 mongoose.connect('mongodb://localhost/huntrDB');
 
 // view engine setup

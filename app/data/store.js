@@ -19,11 +19,17 @@ var Store = assign({}, EventEmitter.prototype, {
   // Initilize
   // =======================
   setInitialState: function(userId) {
-      console.log("I'm Here");
-      var lists = mockInitialState.lists;
-      store.lists = lists;
-      console.log(store.lists);
-      this.emitChange();
+      // var lists = mockInitialState.lists;
+      // store.lists = lists;
+
+      $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/api/dashboard/" + userId,
+        success: function(result) {
+          store.lists = result.lists
+          this.emitChange();
+        }.bind(this)
+      });
   },
 
   getBoardState: function() {

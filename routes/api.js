@@ -31,7 +31,7 @@ router.get('/user', function(req, res, next) {
 
 /* POST  new user info: name, email, username, password */
 router.post('/user', function(req,res,next){
-	var newUser =  new User({"name": req.body.name, "userName": req.body.userName, "email": req.body.email, "passWord": req.body.password});
+	var newUser =  new User({name: req.body.name, userName: req.body.userName, email: req.body.email, passWord: req.body.password});
 	newUser.save(function(err){
 		if(err){
 			console.log(err);
@@ -43,14 +43,27 @@ router.post('/user', function(req,res,next){
 				if(board) {
 					console.log("new userId: " + board.user);
 					console.log("boardId: " + board._id);
+
+					var lists = [
+						{name:"Applied",iconName:"applied.png", board:board._id},
+						{name:"Phone",iconName:"phone.png", board:board._id},
+						{name:"On Site",iconName:"onsite.png", board:board._id},
+						{name:"Offer",iconName:"offer.png", board:board._id}
+					];
+
+					// Create main 4 lists
+					List.collection.insert(lists,function(err,docs) {
+						if (err) {
+		        	console.log(err);
+				    }
+					})
 				}
 			});
 		}
 
 	});
 
-
-	res.send("added user: " + newUser.name + " with email: " + newUser.email);
+	res.send(newUser);
 });
 
 
@@ -72,6 +85,7 @@ router.get("/board", function(req,res,next){
 
 
 /* DASHBOARD REQUESTS */
+//==========================
 
 /* initial GET dashboard info with board, lists, jobs for a given userId */
 router.get('/dashboard/:userId', function(req,res,next){
@@ -106,12 +120,10 @@ router.get('/dashboard/:userId', function(req,res,next){
 					
 
 					if(lists.length <= 0){
-						res.send("NO LISTS");
+						res.send(["NO LISTS"]);
 					}
 					else{
 						//console.log(lists);
-
-
 						var promises = lists.map(function(list){
 							return new Promise(function(resolve,reject){
 								
@@ -120,8 +132,7 @@ router.get('/dashboard/:userId', function(req,res,next){
 								if(err) return handleError(err);
 								if(jobs){
 									 console.log(jobs);
-									completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
-									
+									completeLists.push({_id: list._id, name: list.name, icon_url: list.iconName, jobs: jobs});
 								}
 								console.log("resolving promise");
 								resolve();

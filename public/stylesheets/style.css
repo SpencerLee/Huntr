@@ -207,3 +207,20 @@ a {
 .listIcon {
   width: 15px;
 }
+
+.largeLogo {
+  font-size: 50px;
+  color: #0039FF;
+  text-align: center;
+  padding-top: 120px;
+}
+
+.subTitle {
+  font-size: 22px;
+  text-align: center;
+}
+
+.screenshotContainer {
+    text-align: center;
+    padding-top: 200px
+}
