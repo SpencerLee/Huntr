@@ -7,7 +7,7 @@ var City = require('../models/City');
 var Job = require('../models/Job');
 var User = require('../models/User');
 var Company = require('../models/Company');
-var mongoose = require('mongoose');
+var async = require('async');
 
 /* USER REQUESTS */
 
@@ -77,6 +77,7 @@ router.get("/board", function(req,res,next){
 router.get('/dashboard/:userId', function(req,res,next){
 	// console.log("GET dashboard");
 	 var userId = req.params.userId;
+	 console.log(userId);
 	// console.log(userId);
 	// var userExists = false;
 	// console.log(userExists);
@@ -86,53 +87,87 @@ router.get('/dashboard/:userId', function(req,res,next){
 	// res.send(dash);
 	var dash;
 
-	Board.find({"_id": userId}, function(err, board){
+	Board.findOne({"user": userId}, function(err, board){
 		
 		if(err) return handleError(err);
 		if(board){
-			
+			console.log("BoardId: " + board._id);
 			// lists = getListsForBoard(board._id);
 			// console.log({boardId: board._id, lists: lists});
 			// return {boardId: board._id, lists: lists};
 
-			List.findOne({"board": board._id}, function(err,lists){
+			List.find({"board": board._id}, function(err,lists){
 				if(err) return handleError(err);
 				if(lists){
-					console.log(lists);
+					//console.log(lists);
 					var completeLists = [];
+					var calls = [];
 					var listCount = 0;
-					var listArr = [];
-					for(var list in lists){
-						listArr.push(list);
-					}
-					console.log(listArr.length)
+					
 
-					for(var list in listArr){
-						if(listCount >= (listArr.length-1)){
-								dash = {boardId: board._id, lists: completeLists};
-								res.send(dash);
-								return;
-							}
-						//console.log("getting jobs for: " + list.name);
-						Job.find({"list": list._id}, function(err,jobs){
-							if(err) return handleError(err);
-							if(jobs){
-								 //console.log(jobs);
-								completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
-								console.log(completeLists[listCount]);
-							}	
-							
-							listCount++;
-							//console.log(listCount);
-							
+					if(lists.length <= 0){
+						res.send("NO LISTS");
+					}
+					else{
+						//console.log(lists);
+
+
+						var promises = lists.map(function(list){
+							return new Promise(function(resolve,reject){
 								
-							
+								console.log(list);
+								Job.find({"list": list._id}, function(err,jobs){
+								if(err) return handleError(err);
+								if(jobs){
+									 console.log(jobs);
+									completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
+									
+								}
+								console.log("resolving promise");
+								resolve();
+								})
+							})
 						})
+						Promise.all(promises).then(function(){
+							console.log(completeLists);
+							res.send({boardId: board._id, lists: completeLists});
+						})
+					
+
+
+
+
+						// for(var i in lists){
+						// 	//console.log(lists[i]);
+						// 	if(listCount >= (lists.length-1)){
+						// 			dash = {boardId: board._id, lists: completeLists};
+						// 			console.log(completeLists);
+						// 			res.send({boardId: board._id, lists: completeLists});
+						// 			return;
+						// 		}
+						// 	//console.log("getting jobs for: " + list.name);
+						// 	Job.find({"list": lists[i]._id}, function(err,jobs){
+						// 		if(err) return handleError(err);
+						// 		if(jobs){
+						// 			 //console.log(jobs);
+						// 			completeLists.push({_id: lists[i]._id, name: lists[i].name, icon_url: lists[i].icon_url, jobs: jobs});
+						// 			//console.log(completeLists[listCount]);
+						// 		}	
+								
+						// 		listCount++;
+						// 		console.log(listCount);
+							
+						// 	})
+							
+						// }
 						
 					}
-					
+						
 				}
 			})
+		}
+		else{
+			res.send("NONONO");
 		}
 	})
 	
@@ -179,8 +214,8 @@ router.delete('/DeleteAll', function(req,res,next){
 
 
 router.post("/list", function(req,res,next){
-
-	List.create({"name": req.body.reqName, "iconName": req.body.reqIconName, "board": req.body.reqBoard}, function(err,list){
+	console.log(req.body); 
+	List.create({name: req.body.name, iconName: req.body.iconName, board: req.body.board}, function(err,list){
 		if(err) console.log(err);
 		if(list) {
 			console.log(list);
@@ -192,7 +227,7 @@ router.post("/list", function(req,res,next){
 
 router.get("/list", function(req,res,next){
 
-	List.findOne({_id: req.query.id}, function(err,list){
+	List.findOne({_id: req.query.listId}, function(err,list){
 		if(err) console.log(err);
 		if(list){
 			console.log(list);
