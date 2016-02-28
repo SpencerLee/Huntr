@@ -7,84 +7,13 @@ var City = require('../models/City');
 var Job = require('../models/Job');
 var User = require('../models/User');
 var Company = require('../models/Company');
-var async = require('async');
-
-/* USER REQUESTS */
 
 
-/* GET users info by email. */
-router.get('/user', function(req, res, next) {
-	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
-	  	if (err) console.log(err);
-	  	if(user){
-	  		res.send(user);
-  	}
-  	else{
-  		res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
-  	}
-  });
-  
-	
-	
-});
-
-
-/* POST  new user info: name, email, username, password */
-router.post('/user', function(req,res,next){
-	var newUser =  new User({"name": req.body.name, "userName": req.body.userName, "email": req.body.email, "passWord": req.body.password});
-	newUser.save(function(err){
-		if(err){
-			console.log(err);
-		}
-		if(newUser) {
-			console.log("userId: " + newUser._id);
-			Board.create({user: newUser._id}, function(err, board){
-				if(err) console.log(err);
-				if(board) {
-					console.log("new userId: " + board.user);
-					console.log("boardId: " + board._id);
-				}
-			});
-		}
-
-	});
-
-
-	res.send("added user: " + newUser.name + " with email: " + newUser.email);
-});
-
-
-router.get("/board", function(req,res,next){
-	console.log(req.query.userId);
-	Board.findOne({user: req.query.userId}, function(err, board){
-		if(err) console.log(err);
-		if(board){
-			console.log(board);
-			res.send(board);
-		}
-		else{ 
-			console.log("could not find board");
-			res.send("we're closed");
-		}
-	});
-	
-});
-
-
-/* DASHBOARD REQUESTS */
 
 /* initial GET dashboard info with board, lists, jobs for a given userId */
 router.get('/dashboard/:userId', function(req,res,next){
-	// console.log("GET dashboard");
 	 var userId = req.params.userId;
 	 console.log(userId);
-	// console.log(userId);
-	// var userExists = false;
-	// console.log(userExists);
-
-	// var dash = constructDashboard(userId);
-	// console.log("dash: " + dash);
-	// res.send(dash);
 	var dash;
 
 	Board.findOne({"user": userId}, function(err, board){
@@ -92,38 +21,22 @@ router.get('/dashboard/:userId', function(req,res,next){
 		if(err) return handleError(err);
 		if(board){
 			console.log("BoardId: " + board._id);
-			// lists = getListsForBoard(board._id);
-			// console.log({boardId: board._id, lists: lists});
-			// return {boardId: board._id, lists: lists};
-
 			List.find({"board": board._id}, function(err,lists){
 				if(err) return handleError(err);
 				if(lists){
-					//console.log(lists);
 					var completeLists = [];
-					var calls = [];
-					var listCount = 0;
-					
-
 					if(lists.length <= 0){
 						res.send("NO LISTS");
 					}
 					else{
-						//console.log(lists);
-
-
 						var promises = lists.map(function(list){
 							return new Promise(function(resolve,reject){
-								
-								console.log(list);
+								var list = list;
 								Job.find({"list": list._id}, function(err,jobs){
 								if(err) return handleError(err);
 								if(jobs){
-									 console.log(jobs);
 									completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
-									
 								}
-								console.log("resolving promise");
 								resolve();
 								})
 							})
@@ -132,35 +45,7 @@ router.get('/dashboard/:userId', function(req,res,next){
 							console.log(completeLists);
 							res.send({boardId: board._id, lists: completeLists});
 						})
-					
 
-
-
-
-						// for(var i in lists){
-						// 	//console.log(lists[i]);
-						// 	if(listCount >= (lists.length-1)){
-						// 			dash = {boardId: board._id, lists: completeLists};
-						// 			console.log(completeLists);
-						// 			res.send({boardId: board._id, lists: completeLists});
-						// 			return;
-						// 		}
-						// 	//console.log("getting jobs for: " + list.name);
-						// 	Job.find({"list": lists[i]._id}, function(err,jobs){
-						// 		if(err) return handleError(err);
-						// 		if(jobs){
-						// 			 //console.log(jobs);
-						// 			completeLists.push({_id: lists[i]._id, name: lists[i].name, icon_url: lists[i].icon_url, jobs: jobs});
-						// 			//console.log(completeLists[listCount]);
-						// 		}	
-								
-						// 		listCount++;
-						// 		console.log(listCount);
-							
-						// 	})
-							
-						// }
-						
 					}
 						
 				}
@@ -172,12 +57,6 @@ router.get('/dashboard/:userId', function(req,res,next){
 	})
 	
 });
-
-
-
-/* GET job info */
-
-
 
 
 /* Delete all documents in all models */
@@ -205,30 +84,91 @@ router.delete('/DeleteAll', function(req,res,next){
 
 
 
-/* HELPER FUNCTIONS */
+/* POST  new user info: name, email, username, password */
+router.post('/user', function(req,res,next){
+	var newUser =  new User({"name": req.body.name, "userName": req.body.userName, "email": req.body.email, "passWord": req.body.password});
+	newUser.save(function(err){
+		if(err) return handleError(err);
+		if(newUser) {
+			console.log("userId: " + newUser._id);
+			Board.create({user: newUser._id}, function(err, board){
+				if(err) return handleError(err);
+				if(board) {
+					console.log("new userId: " + board.user);
+					console.log("boardId: " + board._id);
+				}
+			});
+		}
+
+	});
+
+
+	res.send(newUser);
+});
 
 
 
+/* GET users info by email. */
+router.get('/user', function(req, res, next) {
+	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
+	  	if(err) return handleError(err);
+	  	if(user){
+	  		res.send(user);
+  	}
+  	else{
+  		res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
+  	}
+  });
+  
+	
+	
+});
+
+/* POST a new board with given userId */
+router.post('/board', function(req,res,next){
+	Board.create({user: req.body.userId}, function(err,board){
+		if(err) return handleError(err);
+		if(board){
+			res.send(board);
+		}
+	})
+})
+
+/* GET board given boardId*/
+router.get("/board", function(req,res,next){
+	Board.findOne({_.id: req.query.boardId}, function(err, board){
+		if(err) return handleError(err);
+		if(board){
+			console.log(board);
+			res.send(board);
+		}
+		else{ 
+			console.log("could not find board");
+			res.send("we're closed");
+		}
+	});
+	
+});
 
 
-
-
+/*  POST a new list with given parameters */
 router.post("/list", function(req,res,next){
 	console.log(req.body); 
 	List.create({name: req.body.name, iconName: req.body.iconName, board: req.body.board}, function(err,list){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(list) {
 			console.log(list);
 			res.send(list);
-	}
+		}
 	});
 
 });
 
+/* GET a list by listId */
 router.get("/list", function(req,res,next){
 
 	List.findOne({_id: req.query.listId}, function(err,list){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(list){
 			console.log(list);
 			res.send(list);
@@ -240,23 +180,21 @@ router.get("/list", function(req,res,next){
 
 });
 
-
-
-
+/* DELETE a list with a given listId */
 router.delete("/list",function(req,res,next){
-	List.remove({}, function(err){
-		if(err){ console.log(err);
+	List.remove({_.id: req.body.listId}, function(err){
+		if(err) return handleError(err);
 		res.send("removed lists with no name");
-	}
+		}
 	})
 });
 
 
-
+/* POST a new compnay with given parameters */
 router.post("/company", function(req,res,next){
 	console.log(req.body);
 	Company.create({"name": req.body.name, "logoUrl": req.body.logoUrl, "hexColor": req.body.hexColor, "glassdoorId": req.body.glassdoorId, "glassdoorKey": req.body.glassdoorKey, "location": req.body.location}, function(err,company){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(company){
 		 	console.log(company);
 			res.send(company);
@@ -268,37 +206,57 @@ router.post("/company", function(req,res,next){
 
 });
 
+
+/* GET a company with a given companyId */
 router.get('/company', function(req,res,next){
 	Company.find({_id: req.query.companyId}, function(err, company){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(company){ 
 			console.log(company);
 			res.send(company);
-	}
+		}
 	})
 	
 });
 
+
+/* POST a new job with given parameters */
 router.post("/job", function(req,res,next){
 	Job.create({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company}, function(err,job){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(job){ console.log(job.jobTitle);
 		res.send(job);
-	}
+		}
 	})
 
 });
 
+/* GET a job with a given jobId */
 router.get('/job', function(req,res,next){
 	Job.find({_id: req.query.jobId}, function(err, job){
-		if(err) console.log(err);
+		if(err) return handleError(err);
 		if(job){ 
 			console.log(job);
 			res.send(job);
-	}
+		}
 	})
 	
 });
+
+
+/* PUT a job with a given jobId in a new list with given listId */
+router.put('/job',function(req,res,next){
+	Job.find({_id: req.body.jobId}, function(err, job){
+		if(err) return handleError(err);
+		if(job){
+			job.list = req.body.newList;
+			job.save(function(err){
+				if(err) return handleError(err);
+				res.send(job);
+			})
+		}
+	})
+})
 
 
 
