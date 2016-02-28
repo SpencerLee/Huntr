@@ -6,7 +6,7 @@ var List = require('../models/boardlist');
 var City = require('../models/City');
 var Job = require('../models/Job');
 var User = require('../models/User');
-var Compnay = require('../models/Company');
+var Company = require('../models/Company');
 var mongoose = require('mongoose');
 
 /* USER REQUESTS */
@@ -15,25 +15,22 @@ var mongoose = require('mongoose');
 /* GET users info by email. */
 router.get('/user', function(req, res, next) {
 	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
-  	if (err) console.log(err);
-  	if(user){
-  	userObj = user;
-	  	
-	  	res.send( {userId: userObj._id, name: userObj.name, email: userObj.email, userName: userObj.userName})
-  	}
-  	else{
-  		res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
-  	}
-  });
-  
-	
-	
+		if (err) console.log(err);
+		if(user){
+			var userObj = user;
+			res.send( {userId: userObj._id, name: userObj.name, email: userObj.email, userName: userObj.userName})
+		}
+		else{
+			res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
+		}
+	});
 });
 
 
 /* POST  new user info: name, email, username, password */
 router.post('/user', function(req,res,next){
-	var newUser =  new User({"name": req.body.name, "userName": req.body.userName, "email": req.body.email, "passWord": req.body.password});
+	var newUser =  new User({"name": req.body.name, "userName": req.body.userName, "email": req.body.email,
+		"passWord": req.body.password});
 	newUser.save(function(err){
 		if(err){
 			console.log(err);
@@ -48,7 +45,6 @@ router.post('/user', function(req,res,next){
 				}
 			});
 		}
-
 	});
 
 
@@ -72,7 +68,7 @@ router.get("/board", function(req,res,next){
 /* DASHBOARD REQUESTS */
 
 /* initial GET dashboard info with board, lists, jobs for a given userId */
-router.get('/dashboard/:userId', function(req,res,next){
+router.get('/dashboard/:userId', function(req,res, next){
 	// console.log("GET dashboard");
 	 var userId = req.params.userId;
 	// console.log(userId);
@@ -109,7 +105,7 @@ router.get('/dashboard/:userId', function(req,res,next){
 								dash = {boardId: board._id, lists: completeLists};
 								res.send(dash);
 							}
-						})
+						});
 						
 					//}
 					
@@ -138,14 +134,7 @@ router.delete('/DeleteAll', function(req,res,next){
 	User.remove({});
 });
 
-
-
 /* HELPER FUNCTIONS */
-
-
-
-
-
 
 
 router.post("/list", function(req,res,next){
