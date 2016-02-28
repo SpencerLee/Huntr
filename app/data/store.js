@@ -6,9 +6,13 @@ var mockInitialState = require('./mockData_getInitialState')
 // THIS IS OUR GLOBAL STATE
 // ========================
 
-var store = {lists:[]};
-var CHANGE_EVENT = 'state-changed';
+var store = {
+    lists:[],
+    creatingNewJob: false
+  };
 
+
+var CHANGE_EVENT = 'state-changed';
 var Store = assign({}, EventEmitter.prototype, {
 
   // Initilize
@@ -23,6 +27,13 @@ var Store = assign({}, EventEmitter.prototype, {
 
   getBoardState: function() {
     return store;
+  },
+
+  // State
+  // =======================
+  setCreatingNewJob: function(value) {
+    store.creatingNewJob = value;
+    this.emitChange();
   },
 
   // List
