@@ -6,7 +6,7 @@ var List = require('../models/boardlist');
 var City = require('../models/City');
 var Job = require('../models/Job');
 var User = require('../models/User');
-var Compnay = require('../models/Company');
+var Company = require('../models/Company');
 var mongoose = require('mongoose');
 
 /* USER REQUESTS */
@@ -15,11 +15,9 @@ var mongoose = require('mongoose');
 /* GET users info by email. */
 router.get('/user', function(req, res, next) {
 	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
-  	if (err) console.log(err);
-  	if(user){
-  	userObj = user;
-	  	
-	  	res.send( {userId: userObj._id, name: userObj.name, email: userObj.email, userName: userObj.userName})
+	  	if (err) console.log(err);
+	  	if(user){
+	  		res.send(user);
   	}
   	else{
   		res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
@@ -57,15 +55,19 @@ router.post('/user', function(req,res,next){
 
 
 router.get("/board", function(req,res,next){
-	Board.findOne({_id: req.query.userId}, function(err, board){
+	console.log(req.query.userId);
+	Board.findOne({user: req.query.userId}, function(err, board){
 		if(err) console.log(err);
 		if(board){
 			console.log(board);
+			res.send(board);
 		}
-		else{ console.log("could not find board");
+		else{ 
+			console.log("could not find board");
+			res.send("we're closed");
 		}
 	});
-	res.send('blurp');
+	
 });
 
 
@@ -98,20 +100,36 @@ router.get('/dashboard/:userId', function(req,res,next){
 				if(lists){
 					console.log(lists);
 					var completeLists = [];
-					//for(var list in lists){
-						//console.log("getting jobs for: " + list.name);
-						Job.find({"list": lists._id}, function(err,jobs){
-							if(err) return handleError(err);
-							if(jobs){
-								 console.log(jobs);
-								completeLists.push({_id: lists._id, name: lists.name, icon_url: lists.icon_url, jobs: jobs});
-							
+					var listCount = 0;
+					var listArr = [];
+					for(var list in lists){
+						listArr.push(list);
+					}
+					console.log(listArr.length)
+
+					for(var list in listArr){
+						if(listCount >= (listArr.length-1)){
 								dash = {boardId: board._id, lists: completeLists};
 								res.send(dash);
+								return;
 							}
+						//console.log("getting jobs for: " + list.name);
+						Job.find({"list": list._id}, function(err,jobs){
+							if(err) return handleError(err);
+							if(jobs){
+								 //console.log(jobs);
+								completeLists.push({_id: list._id, name: list.name, icon_url: list.icon_url, jobs: jobs});
+								console.log(completeLists[listCount]);
+							}	
+							
+							listCount++;
+							//console.log(listCount);
+							
+								
+							
 						})
 						
-					//}
+					}
 					
 				}
 			})
@@ -123,19 +141,31 @@ router.get('/dashboard/:userId', function(req,res,next){
 
 
 /* GET job info */
-router.get('/job', function(req,res,next){
-	
-});
+
+
 
 
 /* Delete all documents in all models */
 router.delete('/DeleteAll', function(req,res,next){
-	Board.remove({});
-	Activity.remove({});
-	List.remove({});
-	City.remove({});
-	Job.remove({});
-	User.remove({});
+	Board.remove({},function(err){
+		console.log("deleted Board colleciton");
+	});
+	Activity.remove({},function(err){
+		console.log("deleted Activity colleciton");
+	});
+	List.remove({},function(err){
+		console.log("deleted List colleciton");
+	});
+	City.remove({},function(err){
+		console.log("deleted City colleciton");
+	});
+	Job.remove({},function(err){
+		console.log("deleted Job colleciton");
+	});
+	User.remove({},function(err){
+		console.log("deleted User colleciton");
+	});
+	res.send("congratulations you've deleted everything");
 });
 
 
@@ -149,33 +179,90 @@ router.delete('/DeleteAll', function(req,res,next){
 
 
 router.post("/list", function(req,res,next){
-	List.create({name: req.body.name, iconName: req.body.iconName, board: req.body.boardId}, function(err,list){
+
+	List.create({"name": req.body.reqName, "iconName": req.body.reqIconName, "board": req.body.reqBoard}, function(err,list){
 		if(err) console.log(err);
-		if(list) console.log(list);
-		res.send(list);
+		if(list) {
+			console.log(list);
+			res.send(list);
+	}
 	});
 
+});
+
+router.get("/list", function(req,res,next){
+
+	List.findOne({_id: req.query.id}, function(err,list){
+		if(err) console.log(err);
+		if(list){
+			console.log(list);
+			res.send(list);
+		}
+		else{
+			res.send("900");
+		}
+	});
+
+});
+
+
+
+
+router.delete("/list",function(req,res,next){
+	List.remove({}, function(err){
+		if(err){ console.log(err);
+		res.send("removed lists with no name");
+	}
+	})
 });
 
 
 
 router.post("/company", function(req,res,next){
-	Company.create({name: req.body.name, logoUrl: req.body.logoUrl, hexColor: req.body.hexColor, glassdoorId: req.body.glassdoorId, 
-				 glassdoorKey: req.body.glassdoorKey, location: req.body.location}, function(err,company){
+	console.log(req.body);
+	Company.create({"name": req.body.name, "logoUrl": req.body.logoUrl, "hexColor": req.body.hexColor, "glassdoorId": req.body.glassdoorId, "glassdoorKey": req.body.glassdoorKey, "location": req.body.location}, function(err,company){
 		if(err) console.log(err);
-		if(company) console.log(company);
-		res.send(company);
-	});
+		if(company){
+		 	console.log(company);
+			res.send(company);
+		}
+		else{
+			res.send("NO");
+		}
+	})
 
+});
+
+router.get('/company', function(req,res,next){
+	Company.find({_id: req.query.companyId}, function(err, company){
+		if(err) console.log(err);
+		if(company){ 
+			console.log(company);
+			res.send(company);
+	}
+	})
+	
 });
 
 router.post("/job", function(req,res,next){
 	Job.create({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company}, function(err,job){
 		if(err) console.log(err);
-		if(job) console.log(job.jobTitle);
+		if(job){ console.log(job.jobTitle);
 		res.send(job);
-	});
+	}
+	})
 
+});
+
+router.get('/job', function(req,res,next){
+	Job.find({_id: req.query.jobId}, function(err, job){
+		if(err) console.log(err);
+		if(job){ 
+			console.log(job);
+			res.send(job);
+	}
+	})
+	
 });
 
 
