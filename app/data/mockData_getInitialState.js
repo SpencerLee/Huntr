@@ -2,14 +2,14 @@ var initialBoardState = {
   lists: [
     {_id:1,
       name:"Applied",
-      icon_url:"appliedIcon.png",
+      icon_url:"applied.png",
       jobs: [
         {_id:1,
           title:"Software Developer",
           company: {
             name: "Google",
-            icon_url: "googleLogo.png",
-            hex_color: "#342345",
+            icon_url: "https://media.glassdoor.com/sqll/9079/google-squarelogo-1441130773284.png",
+            hex_color: "rgba(252,189,0,0.85)",
             glassdoor_id: "2345",
           },
           cities: [
@@ -21,8 +21,8 @@ var initialBoardState = {
           title:"iOS Developer",
           company: {
             name: "Amazon",
-            icon_url: "amazonLogo.png",
-            hex_color: "#342345",
+            icon_url: "https://media.glassdoor.com/sqll/6036/amazon-com-squarelogo-1432805660196.png",
+            hex_color: "rgba(255,136,13,0.85)",
             glassdoor_id: "2345",
           },
           cities: [
@@ -33,15 +33,15 @@ var initialBoardState = {
       ],
     },
     {_id:2,
-      name:"Phone Interview",
-      icon_url:"phoneIcon.png",
+      name:"Phone",
+      icon_url:"phone.png",
       jobs: [
         {_id:2,
           title:"Software Developer",
           company: {
             name: "Facebook",
-            icon_url: "facebookLogo.png",
-            hex_color: "#342345",
+            icon_url: "https://media.glassdoor.com/sqll/40772/facebook-squarelogo-1381810479272.png",
+            hex_color: "rgba(57,87,155,0.85)",
             glassdoor_id: "2345",
           },
           cities: [
