@@ -16,7 +16,7 @@ var activitySchema = new Schema({
   job: {type: Schema.Types.ObjectId, ref: 'Job'}
 });
 
-var Activity = mongoose.mobile('Activity', activitySchema);
+var Activity = mongoose.model('Activity', activitySchema);
 
 module.exports = Activity;
 
