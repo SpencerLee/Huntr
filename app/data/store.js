@@ -79,7 +79,9 @@ var Store = assign({}, EventEmitter.prototype, {
     return store.users;
   },
 
-  addJob: function(listId,indexPosition) {
+  addJob: function(listId,company,positionTitle) {
+    
+    this.emitChange();
   },
   updateJob: function(id, updates) {
   },
