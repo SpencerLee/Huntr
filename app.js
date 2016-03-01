@@ -13,7 +13,7 @@ var app = express();
 
 // setting up database connection
 
-var dbUri = 'mongodb://huntrapp:nwhacks2016@host:port/db';
+var dbUri = 'mongodb://huntrapp:nwhacks2016@ds019048.mlab.com:19048/heroku_jb1kv7vt';
 var dbLocal = 'mongodb://localhost/huntrDB';
 
 
