@@ -17,7 +17,6 @@ var cardTarget = {
     console.log(hoverIndex);
     console.log(hoverList);
     Store.moveCard(dragIndex,dragList, hoverIndex,hoverList);
-
   }
 };
 
@@ -45,7 +44,18 @@ var collectSource = function(connect, monitor) {
 };
 
 var JobCard    = React.createClass({
-
+  getRandomColor: function() {
+    var colors = [
+      "rgba(252,189,0,0.85)",
+      "rgba(255,136,13,0.85)",
+      "rgba(57,87,155,0.85)",
+      "rgba(201,37,46,0.85)",
+      "rgba(14,99,251,0.85)",
+      "rgba(247,174,79,0.85)"
+    ]
+    return colors[Math.floor(Math.random()*colors.length)];
+    
+  },
   propTypes: {
     company: React.PropTypes.object,
     title: React.PropTypes.string,
@@ -62,7 +72,7 @@ var JobCard    = React.createClass({
 
     return connectDragSource(connectDropTarget(
       <div className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0.5 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'move'}}>
-        <img className={"floatLeft " + this.props.company.name} src={this.props.company.icon_url} />
+        <img className={"floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
         <div className="floatLeft">
           <p className="semiBold regularSize">{this.props.company.name}</p>
           <p className="regular xsmallSize seethrough60">{this.props.title}</p>

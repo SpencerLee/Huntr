@@ -3,6 +3,6 @@ var ReactDOM    = require('react-dom');
 var Board       = require('./components/Board.jsx')
 
 ReactDOM.render(
-  <Board userId={$("#userId").html()}/>,
+  <Board user={user}/>,
   document.getElementById('react-container')
 );

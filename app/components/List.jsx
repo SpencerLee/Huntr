@@ -14,14 +14,14 @@ var List    = React.createClass({
     return (
       <div className="list">
         <div className="listHeader">
-          <img className="floatLeft listIcon" src={"images/list_icon_" + this.props.icon_url} />
+          <img className="floatLeft listIcon" src={"/images/list_icon_" + this.props.icon_url} />
           <div>
             <span className="listName">{this.props.name.toUpperCase()}</span><br/>
             <span className="listCount smallSize seethrough30">{jobs.length + " positions"}</span>
           </div>
         </div>
         {jobs.map(function(job,idx) {
-            return <JobCard listIndex={listIndex} indexInList={idx} company={job.company} title={job.title} color={job.company.hex_color} cities={job.cities} />
+            return <JobCard listIndex={listIndex} indexInList={idx} company={job.company} title={job.jobTitle} color={job.company.hexColor} cities={job.cities} />
         })}
         <NewJobButton listId={this.props.listId} listIndex={this.props.listIndex}/>
       </div>

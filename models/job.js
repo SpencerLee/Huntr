@@ -5,6 +5,7 @@
 
 
 var mongoose = require('mongoose');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var Schema = mongoose.Schema;
 
@@ -14,6 +15,8 @@ var jobSchema = new Schema({
   list: {type: Schema.Types.ObjectId, ref: 'List'},
   company: {type: Schema.Types.ObjectId, ref: 'Company'}
 });
+
+jobSchema.plugin(deepPopulate, { whitelist: [ 'company'] });
 
 var Job = mongoose.model('Job', jobSchema);
 

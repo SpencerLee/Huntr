@@ -8,10 +8,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-  name: String,
-  userName: String,
-  email: String,
-  passWord: String,
+  id:       String,
+  provider:     String,
+  displayName:  String,
+  givenName:    String,
+  familyName:   String,
+  middleName:   String,
+  emails:       Array,
+  userName:     String,
+  photos:       Array,
+  boards:       [{ type: Schema.Types.ObjectId, ref: 'Board' }]
 });
 
 var User = mongoose.model('User', userSchema);

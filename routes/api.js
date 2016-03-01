@@ -1,70 +1,26 @@
-var express = require('express');
-var router = express.Router();
-var Board = require('../models/Board');
-var Activity = require('../models/Activity');
-var List = require('../models/boardlist');
-var City = require('../models/City');
-var Job = require('../models/Job');
-var User = require('../models/User');
-var Company = require('../models/Company');
+var express 				= require('express');
+var router 					= express.Router();
+var Board 					= require('../models/board');
+var Activity 				= require('../models/activity');
+var List 						= require('../models/boardlist');
+var City 						= require('../models/city');
+var Job 						= require('../models/job');
+var Company 				= require('../models/company');
 
 /* USER REQUESTS */
-
+// =====================
 
 /* GET users info by email. */
 router.get('/user', function(req, res, next) {
 	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
-	  	if (err) console.log(err);
-	  	if(user){
+	  if (err) console.log(err);
+	  if (user) {
 	  		res.send(user);
-  	}
-  	else{
-  		res.send({errorCode: 900, errorMessage: "Cannot find user for email "+req.query.email});
+  	} else {
+  		res.send({errorCode: 900, errorMessage: "Cannot find user for email " + req.query.email});
   	}
   });
-  
-	
-	
 });
-
-
-/* POST  new user info: name, email, username, password */
-router.post('/user', function(req,res,next){
-	var newUser =  new User({name: req.body.name, userName: req.body.userName, email: req.body.email, passWord: req.body.password});
-	newUser.save(function(err){
-		if(err){
-			console.log(err);
-		}
-		if(newUser) {
-			console.log("userId: " + newUser._id);
-			Board.create({user: newUser._id}, function(err, board){
-				if(err) console.log(err);
-				if(board) {
-					console.log("new userId: " + board.user);
-					console.log("boardId: " + board._id);
-
-					var lists = [
-						{name:"Applied",iconName:"applied.png", board:board._id},
-						{name:"Phone",iconName:"phone.png", board:board._id},
-						{name:"On Site",iconName:"onsite.png", board:board._id},
-						{name:"Offer",iconName:"offer.png", board:board._id}
-					];
-
-					// Create main 4 lists
-					List.collection.insert(lists,function(err,docs) {
-						if (err) {
-		        	console.log(err);
-				    }
-					})
-				}
-			});
-		}
-
-	});
-
-	res.send(newUser);
-});
-
 
 router.get("/board", function(req,res,next){
 	console.log(req.query.userId);
@@ -83,51 +39,55 @@ router.get("/board", function(req,res,next){
 });
 
 
-/* DASHBOARD REQUESTS */
-//==========================
+/* Initial Dashboard Request */
+//===============================
+
+router.get('/dooshboard', isLoggedIn, function(req,res,next){
+	Board.findOne({"user": req.user._id}).deepPopulate('lists.jobs.company').exec(function (err, board) {
+		res.send(board);
+	});
+});
 
 /* initial GET dashboard info with board, lists, jobs for a given userId */
-router.get('/dashboard/:userId', function(req,res,next){
-	var userId = req.params.userId;
-	console.log(userId);
-	Board.findOne({"user": userId}, function(err, board){
-		if(err) return handleError(err);
-		if(board){
-			console.log("BoardId: " + board._id);
-			List.find({"board": board._id}, function(err,lists){
+router.get('/dashboard', isLoggedIn, function(req,res,next){
+	if (req.user) {
+			Board.findOne({"user": req.user._id}, function(err, board){
 				if(err) return handleError(err);
-				if(lists){
-					var completeLists = [];
-					if(lists.length <= 0){
-						res.send(["NO LISTS"]);
-					}
-					else{
-						var promises = lists.map(function(list){
-							return new Promise(function(resolve,reject){
-								console.log(list);
-								Job.find({"list": list._id}, function(err,jobs){
-								if(err) return handleError(err);
-								if(jobs){
-									 console.log(jobs);
-									completeLists.push({_id: list._id, name: list.name, icon_url: list.iconName, jobs: jobs});
-								}
-								console.log("resolving promise");
-								resolve();
+				if(board){
+					List.find({"board": board._id}, function(err,lists){
+						if(err) return handleError(err);
+						if(lists) {
+							var completeLists = [];
+							if (lists.length <= 0) {
+								res.send(["NO LISTS"]);
+							} else {
+								var promises = lists.map(function(list){
+									return new Promise(function(resolve,reject){
+										Job.find({"list": list._id}, function(err,jobs){
+										if(err) return handleError(err);
+										if(jobs){
+											completeLists.push({_id: list._id, name: list.name, icon_url: list.iconName, jobs: jobs});
+										};
+										console.log("resolving promise");
+										resolve();
+										});
+									});
+								});
+
+								Promise.all(promises).then(function(){
+									console.log(completeLists);
+									res.send({boardId: board._id, lists: completeLists});
 								})
-							})
-						})
-						Promise.all(promises).then(function(){
-							console.log(completeLists);
-							res.send({boardId: board._id, lists: completeLists});
-						})
-					}
+							};
+						};
+					});
+				}
+				else{
+					res.send("NONONO");
 				}
 			})
-		}
-		else{
-			res.send("NONONO");
-		}
-	})
+
+	}
 });
 
 /* Delete all documents in all models */
@@ -152,6 +112,9 @@ router.delete('/DeleteAll', function(req,res,next){
 	});
 	res.send("congratulations you've deleted everything");
 });
+
+// User
+// =====================
 
 /* POST  new user info: name, email, username, password */
 router.post('/user', function(req,res,next){
@@ -193,6 +156,9 @@ router.get('/user', function(req, res, next) {
 	
 });
 
+// Board
+// ====================
+
 /* POST a new board with given userId */
 router.post('/board', function(req,res,next){
 	Board.create({user: req.body.userId}, function(err,board){
@@ -219,6 +185,8 @@ router.get("/board", function(req,res,next){
 	
 });
 
+// List
+// ======================
 
 /*  POST a new list with given parameters */
 router.post("/list", function(req,res,next){
@@ -259,6 +227,9 @@ router.delete("/list",function(req,res,next){
 	})
 });
 
+// Company
+// =====================
+
 /* POST a new compnay with given parameters */
 router.post("/company", function(req,res,next){
 	console.log(req.body);
@@ -288,17 +259,25 @@ router.get('/company', function(req,res,next){
 
 });
 
+// Job
+// =====================
+
 
 /* POST a new job with given parameters */
 router.post("/job", function(req,res,next){
-	Job.create({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company}, function(err,job){
-		if(err) return handleError(err);
-		if(job){ 
-			console.log(job.jobTitle);
-			res.send(job);
-		}
-	})
-
+	var job = new Job({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company});
+	List.findOne({_id:req.body.list}, function(err,list) {
+		if (err) throw err;
+		if (list) {
+			list.jobs.push(job);
+			list.save(function(err, list) {
+				job.save(function(err,job){
+					if(err) console.log(err);
+					if(job){ res.send(job);}
+				});
+			});
+		};
+	});
 });
 
 /* GET a job with a given jobId */
@@ -326,5 +305,15 @@ router.put('/job',function(req,res,next){
 		}
 	})
 });
+
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/');
+}
 
 module.exports = router;

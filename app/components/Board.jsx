@@ -1,14 +1,11 @@
 var React     = require('react');
 var ReactDOM  = require('react-dom');
-// var PropTypes = React.PropTypes;
 var Store     = require('../data/store');
-// var DragSource = require('react-dnd').DragSource;
 var HTML5Backend = require('react-dnd-html5-backend');
 var DragDropContext = require('react-dnd').DragDropContext;
 var List    = require('./List.jsx');
 var NewJobForm = require('./NewJobForm.jsx')
 var Header = require('./Header.jsx')
-
 
 var Board = React.createClass({
     getInitialState: function() {
@@ -27,7 +24,7 @@ var Board = React.createClass({
           {newJobForm}
           <Header />
           {lists.map(function(list,idx) {
-            return <List listIndex={idx} listId={list._id} name={list.name} icon_url={list.icon_url} jobs={list.jobs}/>;
+            return <List listIndex={idx} listId={list._id} name={list.name} icon_url={list.iconName} jobs={list.jobs}/>;
           })}
         </div>
       )
@@ -41,9 +38,9 @@ var Board = React.createClass({
       this.setState(Store.getBoardState());
     },
     componentDidMount: function() {
-      console.log("getting initial state");
+      console.log("Getting initial state");
       Store.addChangeListener(this._onChange);
-      Store.setInitialState(this.props.userId);
+      Store.setInitialState();
     },
     componentWillUnmount: function() {
       Store.removeChangeListener(this._onChange);

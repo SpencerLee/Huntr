@@ -18,13 +18,20 @@ var Store = assign({}, EventEmitter.prototype, {
 
   // Initilize
   // =======================
-  setInitialState: function(userId) {
+  setInitialState: function() {
+      // MOCK DATA
+      // ===================
+      
       // var lists = mockInitialState.lists;
       // store.lists = lists;
+      // this.emitChange();
 
+      // LIVE DATA, BUGGY
+      // ===================
+      
       $.ajax({
         type: "GET",
-        url: "http://localhost:3000/api/dashboard/" + userId,
+        url: "http://localhost:3000/api/dooshboard",
         success: function(result) {
           store.lists = result.lists
           this.emitChange();
@@ -89,22 +96,46 @@ var Store = assign({}, EventEmitter.prototype, {
   },
 
   addJob: function(listId,newcompany,positionTitle) {
-    for (var idx in store.lists) {
-      var list = store.lists[idx];
-      if (list._id == listId) {
-        list.jobs.push({
-          _id:"3",
-          title:positionTitle,
-          company: {
-            name: newcompany.name,
-            icon_url: newcompany.squareLogo,
-            glassdoor_id: newcompany.id,
-            hex_color: "rgba(0,0,0,0.2)",
-          }
-        })
-      }
-    };
-    this.emitChange();
+
+        var promise = new Promise(function(resolve,reject) {
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/api/company",
+            data: {
+              name: newcompany.name,
+              logoUrl: newcompany.squareLogo,
+              hexColor: "#ddd",
+              glassdoorId: newcompany.id
+            },
+            success: function(company) {
+              $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/api/job",
+                data: {
+                  jobTitle: positionTitle,
+                  cities: [],
+                  list: listId,
+                  company: company._id
+                },
+                success: function(job) {
+                  for (var idx in store.lists) {
+                    var list = store.lists[idx];
+                    job.company = company;
+                    if (list._id == listId) {
+                      store.lists[idx].jobs.push(job);
+                      resolve();
+                    }
+                  };
+                }
+              });
+
+            }
+          });
+        });
+
+        promise.then(function() {
+          this.emitChange();
+        }.bind(this));
   },
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
     if (listOne != listTwo) {

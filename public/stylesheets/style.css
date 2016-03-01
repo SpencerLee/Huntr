@@ -5,7 +5,7 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  text-decoration: none
 }
 
 /* Font classes*/
@@ -86,7 +86,8 @@ a {
   float: left;
   padding: 50px 20px;
   width: 270px;
-  border-right: solid 1px #E2E2E2
+  border-right: solid 1px #E2E2E2;
+  height:600px;
 }
 
 .listHeader {
@@ -222,5 +223,19 @@ a {
 
 .screenshotContainer {
     text-align: center;
-    padding-top: 200px
+    padding-top: 70px;
+}
+
+.google-login {
+    text-align: center;
+    background-color: rgba(13,32,254,0.75);
+    padding: 10px 20px;
+    color: white;
+    border-radius: 2px;
+    text-decoration: none,
+}
+
+.signInContainer {
+    text-align: center;
+    margin-top: 60px;
 }
