@@ -11,7 +11,20 @@ var api = require('./routes/api');
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/huntrDB');
+// setting up database connection
+
+var dbUri = 'mongodb://huntrapp:nwhacks2016@host:port/db';
+var dbLocal = 'mongodb://localhost/huntrDB';
+
+
+if(process.env.NODE_ENV == "production"){
+  mongoose.connect(dbUri);
+  console.log("environment is production");
+}
+else{
+  mongoose.connect(dbLocal);
+  console.log("environment is not production");
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
