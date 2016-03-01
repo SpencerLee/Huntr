@@ -15,7 +15,20 @@ var app = express();
 
 PassportConfig.setup();
 
-mongoose.connect('mongodb://localhost/huntrDB');
+// setting up database connection
+
+var dbUri = 'mongodb://huntrapp:nwhacks2016@ds019048.mlab.com:19048/heroku_jb1kv7vt';
+var dbLocal = 'mongodb://localhost/huntrDB';
+
+
+if(process.env.NODE_ENV == "production"){
+  mongoose.connect(dbUri);
+  console.log("environment is production");
+}
+else{
+  mongoose.connect(dbLocal);
+  console.log("environment is not production");
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

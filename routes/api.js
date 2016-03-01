@@ -42,52 +42,10 @@ router.get("/board", function(req,res,next){
 /* Initial Dashboard Request */
 //===============================
 
-router.get('/dooshboard', isLoggedIn, function(req,res,next){
+router.get('/dashboard', isLoggedIn, function(req,res,next){
 	Board.findOne({"user": req.user._id}).deepPopulate('lists.jobs.company').exec(function (err, board) {
 		res.send(board);
 	});
-});
-
-/* initial GET dashboard info with board, lists, jobs for a given userId */
-router.get('/dashboard', isLoggedIn, function(req,res,next){
-	if (req.user) {
-			Board.findOne({"user": req.user._id}, function(err, board){
-				if(err) return handleError(err);
-				if(board){
-					List.find({"board": board._id}, function(err,lists){
-						if(err) return handleError(err);
-						if(lists) {
-							var completeLists = [];
-							if (lists.length <= 0) {
-								res.send(["NO LISTS"]);
-							} else {
-								var promises = lists.map(function(list){
-									return new Promise(function(resolve,reject){
-										Job.find({"list": list._id}, function(err,jobs){
-										if(err) return handleError(err);
-										if(jobs){
-											completeLists.push({_id: list._id, name: list.name, icon_url: list.iconName, jobs: jobs});
-										};
-										console.log("resolving promise");
-										resolve();
-										});
-									});
-								});
-
-								Promise.all(promises).then(function(){
-									console.log(completeLists);
-									res.send({boardId: board._id, lists: completeLists});
-								})
-							};
-						};
-					});
-				}
-				else{
-					res.send("NONONO");
-				}
-			})
-
-	}
 });
 
 /* Delete all documents in all models */

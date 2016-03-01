@@ -31,7 +31,7 @@ var Store = assign({}, EventEmitter.prototype, {
       
       $.ajax({
         type: "GET",
-        url: "http://localhost:3000/api/dooshboard",
+        url: "http://localhost:3000/api/dashboard",
         success: function(result) {
           store.lists = result.lists
           this.emitChange();
