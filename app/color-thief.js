@@ -180,19 +180,16 @@ if (!pv) {
  *
  * @author Nick Rabinowitz
  * @example
-
 // array of pixels as [R,G,B] arrays
 var myPixels = [[190,197,190], [202,204,200], [207,214,210], [211,214,211], [205,207,207]
                 // etc
                 ];
 var maxColors = 4;
-
 var cmap = MMCQ.quantize(myPixels, maxColors);
 var newPalette = cmap.palette();
 var newPixels = myPixels.map(function(p) {
     return cmap.map(p);
 });
-
  */
 var MMCQ = (function() {
     // private constants
@@ -267,7 +264,7 @@ var MMCQ = (function() {
                 histo = vbox.histo;
             if (!vbox._count_set || force) {
                 var npix = 0,
-                    i, j, k;
+                    i, j, k, index;
                 for (i = vbox.r1; i <= vbox.r2; i++) {
                     for (j = vbox.g1; j <= vbox.g2; j++) {
                         for (k = vbox.b1; k <= vbox.b2; k++) {

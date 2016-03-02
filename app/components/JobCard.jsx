@@ -72,7 +72,7 @@ var JobCard    = React.createClass({
 
     return connectDragSource(connectDropTarget(
       <div className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0.5 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'move'}}>
-        <img className={"floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
+        <img id={this.props.company._id} crossOrigin="anonymous" className={"floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
         <div className="floatLeft">
           <p className="semiBold regularSize">{this.props.company.name}</p>
           <p className="regular xsmallSize seethrough60">{this.props.title}</p>
