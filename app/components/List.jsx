@@ -9,7 +9,6 @@ var NewJobButton = require('./NewJobButton.jsx');
 
 var List    = React.createClass({
   render: function() {
-    var jobs = this.props.jobs;
     var listIndex = this.props.listIndex;
     return (
       <div className="list">
@@ -17,10 +16,10 @@ var List    = React.createClass({
           <img className="floatLeft listIcon" src={"/images/list_icon_" + this.props.icon_url} />
           <div>
             <span className="listName">{this.props.name.toUpperCase()}</span><br/>
-            <span className="listCount smallSize seethrough30">{jobs.length + " positions"}</span>
+            <span className="listCount smallSize seethrough30">{this.props.jobs.length + " positions"}</span>
           </div>
         </div>
-        {jobs.map(function(job,idx) {
+        {this.props.jobs.map(function(job,idx) {
             return <JobCard job={job} listIndex={listIndex} indexInList={idx} company={job.company} title={job.jobTitle} color={job.company.hexColor} cities={job.cities} />
         })}
         <NewJobButton listId={this.props.listId} listIndex={this.props.listIndex}/>

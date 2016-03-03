@@ -198,11 +198,11 @@ var Store = assign({}, EventEmitter.prototype, {
         for (idx in list.jobs) {
           var job = list.jobs[idx];
           if (job._id == jobId) {
-            delete list.jobs[idx];
+            store.lists[listIdx]["jobs"].splice(idx,1);
+            this.emitChange();
             break;
           };
         };
-        this.emitChange();
       }.bind(this)
     });
   },
