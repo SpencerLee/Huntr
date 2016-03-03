@@ -109,7 +109,7 @@ a {
   border-radius: 2px;
 }
 
-.jobCard img {
+.jobCard img.logo {
   box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
   width: 30px;
   height: 30px;
@@ -238,4 +238,18 @@ a {
 .signInContainer {
     text-align: center;
     margin-top: 60px;
+}
+
+.deleteButton {
+  display: block;
+  opacity: 0.2;
+  width: 10px;
+  left: 228px;
+  position: relative;
+  margin-bottom: -10px;
+  bottom: 8px;
+}
+
+.deleteButton:hover {
+  opacity: 0.5;
 }

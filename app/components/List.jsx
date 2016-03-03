@@ -21,7 +21,7 @@ var List    = React.createClass({
           </div>
         </div>
         {jobs.map(function(job,idx) {
-            return <JobCard listIndex={listIndex} indexInList={idx} company={job.company} title={job.jobTitle} color={job.company.hexColor} cities={job.cities} />
+            return <JobCard job={job} listIndex={listIndex} indexInList={idx} company={job.company} title={job.jobTitle} color={job.company.hexColor} cities={job.cities} />
         })}
         <NewJobButton listId={this.props.listId} listIndex={this.props.listIndex}/>
       </div>

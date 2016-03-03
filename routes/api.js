@@ -7,6 +7,14 @@ var City 						= require('../models/city');
 var Job 						= require('../models/job');
 var Company 				= require('../models/company');
 
+
+/* RESPONSE CODES */
+
+var CODES 	= {
+	SUCCESS: 200,
+	ERROR: 404,
+};
+
 /* USER REQUESTS */
 // =====================
 
@@ -263,6 +271,17 @@ router.put('/job',function(req,res,next){
 		}
 	})
 });
+
+/* DELETE a job with a given jobId */
+router.delete('/job', function(req,res,next){
+	Job.findOne({_id: req.body.jobId}, function(err, job) {
+		job.remove(function(err) {
+			if (err) throw err;
+			res.send({code: CODES.SUCCESS});
+		});
+	});
+});
+
 
 function isLoggedIn(req, res, next) {
 

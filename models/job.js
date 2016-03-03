@@ -16,6 +16,16 @@ var jobSchema = new Schema({
   company: {type: Schema.Types.ObjectId, ref: 'Company'}
 });
 
+// Make sure to remove job from list when deleting
+jobSchema.pre('remove', function(next){
+    this.model('List').update(
+        {_id: this.list}, 
+        {$pull: {jobs: this._id}}, 
+        {multi: true},
+        next
+    );
+});
+
 jobSchema.plugin(deepPopulate, { whitelist: [ 'company'] });
 
 var Job = mongoose.model('Job', jobSchema);

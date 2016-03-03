@@ -187,7 +187,24 @@ var Store = assign({}, EventEmitter.prototype, {
   },
   updateJob: function(id, updates) {
   },
-  removeJob: function(id) {
+  removeJob: function(jobId,listIdx) {
+    $.ajax({
+      type: "DELETE",
+      url: "http://localhost:3000/api/job",
+      data: { jobId: jobId },
+      success: function(response) {
+        var list = store.lists[listIdx];
+        var idx;
+        for (idx in list.jobs) {
+          var job = list.jobs[idx];
+          if (job._id == jobId) {
+            delete list.jobs[idx];
+            break;
+          };
+        };
+        this.emitChange();
+      }.bind(this)
+    });
   },
 
   // Board
