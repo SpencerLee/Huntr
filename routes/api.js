@@ -125,7 +125,7 @@ router.post('/board', function(req,res,next){
 			res.send(board);
 		}
 	})
-})
+});
 
 /* GET board given boardId*/
 router.get("/board", function(req,res,next){
@@ -173,6 +173,31 @@ router.get("/list", function(req,res,next){
 		}
 	});
 
+});
+
+router.put("/list", function(req, res, next){
+	List.update(
+		{_id: req.body.list_id},
+		{$set: {jobs: req.body.jobs}}
+	);
+	List.findById(req.body.list_id, function(err, list){
+		if(err) return handleError(err);
+		if(list){
+			list.name = req.body.name;
+			list.iconName = req.body.iconName;
+			list.board = req.body.board;
+			//var newList = new List({jobs: req.body.jobs})
+			list.setJobs(req.body.job);
+
+			list.save(function(err){
+				if(err) res.send(err);
+				res.send(list);
+			});
+		}
+		else{
+			res.send("900")
+		}
+	})
 });
 
 /* DELETE a list with a given listId */
@@ -252,14 +277,21 @@ router.get('/job', function(req,res,next){
 
 /* PUT a job with a given jobId in a new list with given listId */
 router.put('/job',function(req,res,next){
-	Job.find({_id: req.body.jobId}, function(err, job){
+	Job.findById(req.body.job_id, function(err, job){
 		if(err) return handleError(err);
 		if(job){
-			job.list = req.body.newList;
+			job.title = req.body.jobTitle;
+			job.cities = req.body.cities;
+			job.list = req.body.list;
+			job.company = req.body.company;
+
 			job.save(function(err){
-				if(err) return handleError(err);
+				if(err) res.send(err);
 				res.send(job);
-			})
+			});
+		}
+		else{
+			res.send("900");
 		}
 	})
 });

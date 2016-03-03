@@ -12,7 +12,21 @@ var listSchema = new Schema({
   iconName: String,
   board: {type: Schema.Types.ObjectId, ref: 'Board'},
   jobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }]
+  //jobs: [String]
 });
+
+
+listSchema.methods.setJobs = function(jobs){
+  var newJobs = [];
+  //jobs.forEach(function(job){
+  //  newJobs.push(mongoose.Types.ObjectId(job))
+  //})
+  if(jobs){
+    this.jobs.push([mongoose.Types.ObjectId(jobs)]);
+  }
+  //this.jobs = mongoose.Types.ObjectId(jobs);
+
+}
 
 listSchema.plugin(deepPopulate, { whitelist: [ 'jobs'] });
 
