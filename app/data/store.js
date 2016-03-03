@@ -9,9 +9,10 @@ var mockInitialState = require('./mockData_getInitialState')
 var store = {
     lists:[],
     creatingNewJob: false,
-    creatingNewJobForList: null
+    creatingNewJobForList: null,
+    viewingJob: false,
+    viewingJobId: null
   };
-
 
 var CHANGE_EVENT = 'state-changed';
 var Store = assign({}, EventEmitter.prototype, {
@@ -45,8 +46,17 @@ var Store = assign({}, EventEmitter.prototype, {
 
   // State
   // =======================
-  
+  setViewingJob: function(value,jobId) {
+    store.creatingNewJob = false;
+    store.creatingNewJobForList = null;
+    store.viewingJob = value;
+    store.viewingJobId = jobId;
+    this.emitChange();
+  },
+
   setCreatingNewJob: function(value,listId) {
+    store.viewingJob = false;
+    store.viewingJobId = null;
     store.creatingNewJob = value;
     store.creatingNewJobForList = listId;
     this.emitChange();
@@ -88,7 +98,19 @@ var Store = assign({}, EventEmitter.prototype, {
   // =======================
   
   getJob: function(jobId) {
-    return store.lists[id];
+    var idx;
+    for (idx in store.lists) {
+      var list = store.lists[idx];
+      var jidx;
+      for (jidx in list.jobs) {
+        var job = list.jobs[jidx];
+        if (job._id == jobId) {
+          return job;
+        }
+      }
+    }
+
+    return null;
   },
 
   getJobs: function(listId) {
@@ -161,7 +183,7 @@ var Store = assign({}, EventEmitter.prototype, {
             sendJobInfo(rgbColor,newcompany.squareLogo);
           }.bind(this);
 
-          image.crossOrigin="Anonymous";
+          image.crossOrigin = "Anonymous";
           image.src=newcompany.squareLogo;
           console.log("This is the company logo url" + newcompany.squareLogo);
           document.body.appendChild(canvas);

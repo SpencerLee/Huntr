@@ -30,8 +30,8 @@ var NewJobButton    = React.createClass({
   render: function() {
     var connectDropTarget = this.props.connectDropTarget;
     return connectDropTarget(
-      <button className="newJobButton regularSize semiBold" onClick={this.onClick}>
-        + New Job
+      <button className="newJobButton regularSize" onClick={this.onClick}>
+        <span className="semiBold xlargeSize addIcon">+</span><span>  New Job</span>
       </button>
     );
   },

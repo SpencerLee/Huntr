@@ -4,8 +4,9 @@ var Store     = require('../data/store');
 var HTML5Backend = require('react-dnd-html5-backend');
 var DragDropContext = require('react-dnd').DragDropContext;
 var List    = require('./List.jsx');
-var NewJobForm = require('./NewJobForm.jsx')
-var Header = require('./Header.jsx')
+var NewJobForm = require('./NewJobForm.jsx');
+var JobDetails = require('./JobDetails.jsx');
+var Header = require('./Header.jsx');
 
 var Board = React.createClass({
     getInitialState: function() {
@@ -14,18 +15,25 @@ var Board = React.createClass({
     render: function() {
       var lists = this.state.lists;
       var creatingJob = this.state.creatingNewJob;
-      var newJobForm = null;
+      var viewingJob = this.state.viewingJob;
+      var popup = null;
       if (creatingJob) {
-        newJobForm = <NewJobForm listId={this.state.creatingNewJobForList} />;
+        console.log("Creating Job");
+        popup = <NewJobForm listId={this.state.creatingNewJobForList} />;
+      } else if (viewingJob) {
+        console.log("Viewing Job");
+        popup = <JobDetails job={Store.getJob(this.state.viewingJobId)} />;
       }
 
       return (
-        <div style={{width: lists.length * 400}}>
-          {newJobForm}
-          <Header />
-          {lists.map(function(list,idx) {
-            return <List listIndex={idx} listId={list._id} name={list.name} icon_url={list.iconName} jobs={list.jobs}/>;
-          })}
+        <div style={{overflow: 'scroll'}}>
+          {popup}
+          <Header user={this.props.user}/>
+          <div style={{width: lists.length * 400}}>
+            {lists.map(function(list,idx) {
+              return <List listIndex={idx} listId={list._id} name={list.name} icon_url={list.iconName} jobs={list.jobs}/>;
+            })}
+          </div>
         </div>
       )
     },

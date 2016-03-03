@@ -9,6 +9,10 @@ var Header    = React.createClass({
     return (
       <div className="header">
         <span className="logo xlargeSize semiBold">huntr</span>
+        <div className="userInfo">
+          <span>{this.props.user.displayName}</span>
+          <img src={this.props.user.photos[0].value}/>
+        </div>
       </div>
     );
   }

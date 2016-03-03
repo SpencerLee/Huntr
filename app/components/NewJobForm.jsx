@@ -1,12 +1,9 @@
 var React     = require('react');
 var ReactDOM  = require('react-dom');
 var PropTypes = React.PropTypes;
-var DragSource = require('react-dnd').DragSource;
-var HTML5Backend = require('react-dnd-html5-backend');
 var Store     = require('../data/store');
 var CompanyDropDown   = require('./CompanyDropDown.jsx');
 var Glassdoor = require('../api/request/glassdoorRequest');
-
 
 var NewJobForm    = React.createClass({
   getInitialState: function() {

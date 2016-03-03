@@ -72,15 +72,18 @@ var JobCard    = React.createClass({
     var isDragging = this.props.isDragging;
 
     return connectDragSource(connectDropTarget(
-      <div className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0.5 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'pointer'}}>
+      <div onClick={this.onClick} className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0.5 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'pointer'}}>
         <img src="/images/delete.png" className="deleteButton" onClick={this.onDeleteClick}/>
-        <img id={this.props.company._id} crossOrigin="anonymous" className={"logo floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
+        <img crossOrigin="anonymous" id={this.props.company._id} className={"logo floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
         <div className="floatLeft">
           <p className="semiBold regularSize">{this.props.company.name}</p>
           <p className="regular xsmallSize seethrough60">{this.props.title}</p>
         </div>
       </div>
     ));
+  },
+  onClick: function() {
+    Store.setViewingJob(true,this.props.job._id);
   },
   onDeleteClick: function() {
     Store.removeJob(this.props.job._id,this.props.listIndex);

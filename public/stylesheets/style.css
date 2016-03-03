@@ -8,6 +8,14 @@ a {
   text-decoration: none
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none
+}
 /* Font classes*/
 .light {
   font-weight: 300;
@@ -38,6 +46,11 @@ a {
 .xlargeSize {
   font-size: 22px;
 }
+
+.xxlargeSize {
+  font-size: 24px;
+}
+
 .smallSize {
   font-size: 14px;
 }
@@ -65,7 +78,7 @@ a {
 }
 
 .popupWhite {
-  background-color: rgba(242,242,242,0.9);
+  background-color: rgba(249,249,249,0.9);
   width: 100%;
   position: absolute;
   height: 100%;
@@ -170,7 +183,7 @@ a {
 
 .header {
   height: 35px;
-  padding: 7px 0px 3px 20px;
+  padding: 7px 0px 3px 0px;
   position: absolute;
   background-color: rgba(255,255,255,0.85);
   z-index: 3;
@@ -203,6 +216,7 @@ a {
 
 .header span.logo {
   color: #0039FF;
+  padding-left: 20px;
 }
 
 .listIcon {
@@ -252,4 +266,67 @@ a {
 
 .deleteButton:hover {
   opacity: 0.5;
+}
+
+.userInfo {
+  float: right;
+  margin-right: 20px
+}
+
+.userInfo span {
+  color: #999;
+  font-size: 13px;
+}
+
+.userInfo img {
+  width: 20px;
+  border-radius: 10px;
+  margin-left: 10px;
+  top: 5px;
+  position: relative;
+}
+
+.addIcon {
+  color: rgba(0,0,0,0.45);
+  position: relative;
+  top: 2px;
+  margin-right: 6px;
+}
+
+.jobDetails {
+  text-align: left;
+  margin-top: 200px;
+  position: absolute;
+  z-index: 2;
+  margin-left: 30%;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+  width: 550px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.jobLogo {
+  width: 40px;
+  border-radius: 20px;
+  box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+}
+
+.sideBar {
+  background-color: rgba(0,0,0,0.03);
+  position: relative;
+  float: right;
+  width: 170px;
+  padding: 30px 0px 30px 20px;
+  border-left: 1px solid #ddd;
+}
+
+.sideBar li {
+  opacity: 0.4;
+  font-size: 13px;
+}
+.mainSection {
+  padding: 30px;
+  position: relative;
+  float: left;
 }
