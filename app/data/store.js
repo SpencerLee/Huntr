@@ -194,7 +194,7 @@ var Store = assign({}, EventEmitter.prototype, {
           sendJobInfo([174,174,174],"/images/nologo.png");
         }
   },
-  persistListInSwitch: function(listObj, jobIdToRmv){
+  persistListInSwitchHelper: function(listObj, jobIdToRmv){
     $.ajax({
       type: "PUT",
       url: "http://localhost:3000/api/list",
@@ -211,7 +211,7 @@ var Store = assign({}, EventEmitter.prototype, {
       }
     });
   },
-  persitJobInSwitch: function(jobObj, listObject, jobRmv) {
+  persitListInSwitch: function(jobObj, listObject, jobRmv) {
     if(jobObj){
       var promise = new Promise(function(resolve,reject) {
         $.ajax({
@@ -252,7 +252,7 @@ var Store = assign({}, EventEmitter.prototype, {
       promise.then();
     }
     else{
-      this.persistListInSwitch(listObject, jobRmv);
+      this.persistListInSwitchHelper(listObject, jobRmv);
     }
   },
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
@@ -284,8 +284,8 @@ var Store = assign({}, EventEmitter.prototype, {
         newLstId: list_2._id,
         company: tempJob.company._id
       };
-      this.persitJobInSwitch(null, list_1Obj, tempJob._id);
-      this.persitJobInSwitch(jobObj, list_2Obj, null);
+      this.persitListInSwitch(null, list_1Obj, tempJob._id);
+      this.persitListInSwitch(jobObj, list_2Obj, null);
 
     } else {
       // Swap Them
