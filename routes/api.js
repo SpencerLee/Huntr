@@ -285,6 +285,7 @@ router.put('/job',function(req,res,next){
 			job.cities = req.body.cities;
 			job.list = req.body.list;
 			job.company = req.body.company;
+			job.setMessages(req.body.messages);
 			job.save(function(err){
 				if(err) res.send(err);
 				res.send(job);

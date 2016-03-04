@@ -222,7 +222,8 @@ var Store = assign({}, EventEmitter.prototype, {
             jobTitle: jobObj.jobTitle,
             cities: jobObj.cities,
             list: jobObj.newLstId,
-            company: jobObj.company
+            company: jobObj.company,
+            messages: jobObj.messages
           },
           listObject: listObject,
           jobRmv: jobRmv,
@@ -282,7 +283,8 @@ var Store = assign({}, EventEmitter.prototype, {
         jobTitle: tempJob.jobTitle,
         cities: tempJob.cities,
         newLstId: list_2._id,
-        company: tempJob.company._id
+        company: tempJob.company._id,
+        messages: tempJob.messages
       };
       this.persitListInSwitch(null, list_1Obj, tempJob._id);
       this.persitListInSwitch(jobObj, list_2Obj, null);

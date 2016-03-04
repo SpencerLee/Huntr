@@ -27,6 +27,17 @@ jobSchema.pre('remove', function(next){
     );
 });
 
+jobSchema.methods.setMessages = function(messages){
+  //TODO:
+  //this method is here so that when we have empty
+  //messages we stay consitent with empty message array
+  // message Id-- this may needed to be added to
+  // modified when we start having non empty messages
+
+    this.messages = this.messages;
+
+};
+
 jobSchema.plugin(deepPopulate, { whitelist: [ 'company'] });
 
 var Job = mongoose.model('Job', jobSchema);
