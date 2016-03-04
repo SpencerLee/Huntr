@@ -15,18 +15,27 @@ var listSchema = new Schema({
   //jobs: [String]
 });
 
-
-listSchema.methods.setJobs = function(jobs){
-  var newJobs = [];
-  //jobs.forEach(function(job){
-  //  newJobs.push(mongoose.Types.ObjectId(job))
-  //})
-  if(jobs){
-    this.jobs.push([mongoose.Types.ObjectId(jobs)]);
+/**
+ * Used to add or remove job from jobs
+ * @param job the job id that is to be added to the list
+ * use null if non is to be added
+ * @param jobRmv: the job id that is to be removed from the
+ * job list
+ */
+listSchema.methods.setJobs = function(job, jobRmv){
+  if(job){
+    this.jobs.push([mongoose.Types.ObjectId(job)]);
   }
-  //this.jobs = mongoose.Types.ObjectId(jobs);
-
-}
+  if(jobRmv){
+    var newJobs = [];
+    this.jobs.forEach(function(jobId){
+      if(jobId != jobRmv){
+        newJobs.push(jobId);
+      }
+    });
+    this.jobs = newJobs
+  }
+};
 
 listSchema.plugin(deepPopulate, { whitelist: [ 'jobs'] });
 

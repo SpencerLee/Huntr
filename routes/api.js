@@ -140,7 +140,6 @@ router.get("/board", function(req,res,next){
 			res.send("we're closed");
 		}
 	});
-	
 });
 
 // List
@@ -156,7 +155,6 @@ router.post("/list", function(req,res,next){
 			res.send(list);
 		}
 	});
-
 });
 
 /* GET a list by listId */
@@ -176,19 +174,13 @@ router.get("/list", function(req,res,next){
 });
 
 router.put("/list", function(req, res, next){
-	List.update(
-		{_id: req.body.list_id},
-		{$set: {jobs: req.body.jobs}}
-	);
 	List.findById(req.body.list_id, function(err, list){
 		if(err) return handleError(err);
 		if(list){
 			list.name = req.body.name;
 			list.iconName = req.body.iconName;
 			list.board = req.body.board;
-			//var newList = new List({jobs: req.body.jobs})
-			list.setJobs(req.body.job);
-
+			list.setJobs(req.body.job, req.body.jobRmv);
 			list.save(function(err){
 				if(err) res.send(err);
 				res.send(list);

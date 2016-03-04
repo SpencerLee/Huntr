@@ -128,16 +128,14 @@ var Store = assign({}, EventEmitter.prototype, {
                   };
                 }
               });
-
             }
           });
         });
-
         promise.then(function() {
           this.emitChange();
         }.bind(this));
   },
-  persistListSwitch: function(listObj){
+  persistListSwitch: function(listObj, jobIdToRmv){
     $.ajax({
       type: "PUT",
       url: "http://localhost:3000/api/list",
@@ -147,15 +145,15 @@ var Store = assign({}, EventEmitter.prototype, {
         iconName: listObj.iconName,
         board: listObj.board,
         jobs: listObj.jobs,
-        job: null
+        job: null,
+        jobRmv: jobIdToRmv
       },
       success: function(list){
         list
       }
     });
-
   },
-  persitJobSwitcher: function(jobObj, listObject) {
+  persitJobSwitcher: function(jobObj, listObject, jobRmv) {
     if(jobObj){
       var promise = new Promise(function(resolve,reject) {
         $.ajax({
@@ -169,10 +167,10 @@ var Store = assign({}, EventEmitter.prototype, {
             company: jobObj.company
           },
           listObject: listObject,
+          jobRmv: jobRmv,
           success: function (job) {
             var listObj = this.listObject;
-            //this.listObject.jobs.push(job);
-            //this.persistListSwitch(this.listObject)
+            var rmvJob = this.jobRmv;
             var jobId = job._id;
             var listJobId = [job._id];
             this.listObject.jobs.forEach(function (preJob) {
@@ -189,7 +187,8 @@ var Store = assign({}, EventEmitter.prototype, {
                 iconName: listObj.iconName,
                 board: listObj.board,
                 jobs: listJobId,
-                job: jobId
+                job: jobId,
+                jobRmv: rmvJob
               },
               success: function (list) {
                 list
@@ -201,14 +200,13 @@ var Store = assign({}, EventEmitter.prototype, {
       });
       promise.then();
     }
-
     else{
       var listJobId = [];
       listObject.jobs.forEach(function(job){
         listJobId.push(job._id);
       });
       listObject.jobs = listJobId;
-      this.persistListSwitch(listObject)
+      this.persistListSwitch(listObject, jobRmv)
     }
   },
 
@@ -241,31 +239,13 @@ var Store = assign({}, EventEmitter.prototype, {
         newLstId: list_2._id,
         company: tempJob.company._id
       };
-      this.persitJobSwitcher(null, list_1Obj);
-      this.persitJobSwitcher(jobObj, list_2Obj);
-      //this.persistJobSwitch(list_1._id, list_1.name, list_1.iconName,
-      //  list_1.board, list_1.jobs);
-      //this.persistJobSwitch(list_2._id, list_2.name, list_2.iconName,
-      //  list_2.board, list_2.jobs);
-      //$.ajax({
-      //  type: "PUT",
-      //  url: "http://localhost:3000/api/list",
-      //  data: {
-      //    list_id: store.lists[listTwo]._id,
-      //    name: store.lists[listTwo].name,
-      //    iconName: store.lists[listTwo].iconName,
-      //    board: store.lists[listTwo].board,
-      //    jobs: store[listTwo][jobs]
-      //  },
-      //  success: function(List){
-      //
-      //  }
-      //});
+      this.persitJobSwitcher(null, list_1Obj, tempJob._id);
+      this.persitJobSwitcher(jobObj, list_2Obj, null);
 
     } else {
       // Swap Them
       var tempJob = store.lists[listOne]["jobs"][indexOne];
-      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo]
+      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo];
       store.lists[listTwo]["jobs"][indexTwo] = tempJob;
     }
 
