@@ -69,6 +69,11 @@ li {
 .seethrough30 {
   opacity: 0.3;
 }
+
+.seethrough40 {
+  opacity: 0.4;
+}
+
 .seethrough60 {
   opacity: 0.6;
 }
@@ -295,7 +300,7 @@ li {
 
 .jobDetails {
   text-align: left;
-  margin-top: 200px;
+  margin-top: 6%;
   position: absolute;
   z-index: 2;
   margin-left: 30%;
@@ -304,6 +309,7 @@ li {
   box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
   width: 550px;
   border: 1px solid rgba(0,0,0,0.1);
+  color: #2b2b2b;
 }
 
 .jobLogo {
@@ -317,6 +323,7 @@ li {
   position: relative;
   float: right;
   width: 170px;
+  height: 500px;
   padding: 30px 0px 30px 20px;
   border-left: 1px solid #ddd;
 }
@@ -329,4 +336,72 @@ li {
   padding: 30px;
   position: relative;
   float: left;
+}
+
+.emailSearchField {
+  width: 250px;
+  height: 10px;
+  border-radius: 2px;
+  margin-bottom: 8px;
+  padding: 14px;
+  font-family: "Source Sans Pro";
+  border: 1px solid #eee;
+}
+
+.emailSearchButton {
+  background-color: rgba(13,32,254,0.75);
+  position: relative;
+  bottom: 41px;
+  left: 247px;
+  border-radius: 2px;
+  width: 25px;
+  height: 25px;
+  border-style: none;
+}
+
+.emailSearchButton img {
+  width: 13px;
+}
+
+.contactTimeline {
+  margin-top: 100px
+}
+
+.contactTimelineHeader {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 25px
+}
+
+.emailSearchResults {
+  max-height: 180px;
+  overflow: scroll;
+}
+
+.messageDetail {
+  margin-bottom: 30px;
+}
+.messageDetail p {
+  margin: 2px 0px;
+  overflow: hidden;
+  width: 275px;
+  height: 1.2em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.messageDetail p.from {
+  width: 200px;
+  margin: 6px 0px;
+  color: rgba(0,0,0,0.9);
+}
+
+.messageDetail p.subject {
+  color: rgba(0,0,0,0.7);
+  font-size: 13px;
+}
+
+.messageDetail p.snippet {
+  color: rgba(0,0,0,0.4);
 }

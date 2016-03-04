@@ -3,9 +3,18 @@ var ReactDOM  = require('react-dom');
 var PropTypes = React.PropTypes;
 var Store     = require('../data/store');
 var Glassdoor = require('../api/request/glassdoorRequest');
+var MessageSearchBox = require('./MessageSearchBox.jsx');
+var MessageList = require('./MessageList.jsx');
 
 var JobDetails    = React.createClass({
   render: function() {
+
+    var messageWidget = null;
+    if (Store.searchingMessages || (this.props.job.messages.length == 0)) {
+      messageWidget = <MessageSearchBox user={Store.getUser()} companyName={this.props.job.company.name} jobTitle={this.props.job.jobTitle}/>;
+    } else {
+      messageWidget = <MessageList messages={this.props.job.messages}/>;
+    };
     return (
       <div>
         <div className="popupWhite" onClick={this.onBackGroundClick}>
@@ -22,8 +31,12 @@ var JobDetails    = React.createClass({
               </div>
             </div>
             <div className="jobTags"></div>
-            <div className="jobTimeline">
-
+            <div className="contactTimeline">
+              <div className="contactTimelineHeader">
+                <span className="semiBold regularSize">Contact Timeline</span><br/>
+                <span className="seethrough40 xsmallSize">{this.props.job.messages.length + " Messages"}</span>
+              </div>
+              {messageWidget}
             </div>
           </div>
           <div className="sideBar">
@@ -50,7 +63,7 @@ var JobDetails    = React.createClass({
   },
   onBackGroundClick: function() {
     Store.setViewingJob(false,null);
-  },
+  }
 });
 
 module.exports = JobDetails;

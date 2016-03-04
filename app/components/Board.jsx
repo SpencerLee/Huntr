@@ -47,6 +47,7 @@ var Board = React.createClass({
     },
     componentDidMount: function() {
       console.log("Getting initial state");
+      Store.setUser(this.props.user);
       Store.addChangeListener(this._onChange);
       Store.setInitialState();
     },

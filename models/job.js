@@ -13,7 +13,8 @@ var jobSchema = new Schema({
   jobTitle: String,
   cities: [String],
   list: {type: Schema.Types.ObjectId, ref: 'List'},
-  company: {type: Schema.Types.ObjectId, ref: 'Company'}
+  company: {type: Schema.Types.ObjectId, ref: 'Company'},
+  messages: [{type: Schema.Types.ObjectId, ref: 'Message'}]
 });
 
 // Make sure to remove job from list when deleting

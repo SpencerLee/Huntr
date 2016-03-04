@@ -15,13 +15,18 @@ router.get('/', function(req, res, next) {
 router.get('/dashboard',isLoggedIn, function(req, res, next) {
   console.log("THis is the user");
   console.log(req.user);  
-
+  console.log(req);
   res.render('index', { user: req.user });
 });
 
 // AUTH
 // =======================
-router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+router.get('/auth/google', passport.authenticate('google', { scope : [
+  'profile', 
+  'email',
+  'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile'] }));
 router.get('/auth/google/return*',
   passport.authenticate('google', { successRedirect: '/dashboard',
                                     failureRedirect: '/' }));

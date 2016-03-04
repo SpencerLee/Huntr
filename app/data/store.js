@@ -7,11 +7,13 @@ var mockInitialState = require('./mockData_getInitialState')
 // ========================
 
 var store = {
+    user: {},
     lists:[],
-    creatingNewJob: false,
+    creatingNewJob: false,          // true when the new job popup is visible
     creatingNewJobForList: null,
-    viewingJob: false,
-    viewingJobId: null
+    viewingJob: false,              // true when the job details popup is visible
+    viewingJobId: null,
+    searchingMessages: true,       // true when the new job popup is visible, and we are searching messages
   };
 
 var CHANGE_EVENT = 'state-changed';
@@ -229,9 +231,16 @@ var Store = assign({}, EventEmitter.prototype, {
     });
   },
 
-  // Board
+  // User
   // =======================
+  setUser: function(user) {
+    store.user = user;
+  },
 
+  getUser: function() {
+    return store.user;
+  },
+  
   // Notifications
   // =========================
   

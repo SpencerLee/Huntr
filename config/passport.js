@@ -32,17 +32,25 @@ var Passport = {
 
         },
         function(token, refreshToken, profile, done) {
+            console.log("TOKEN AND REFRESH");
+            console.log(token);
+            console.log(refreshToken);
             process.nextTick(function() {
                 // try to find the user based on their google id
                 User.findOne({ 'id' : profile.id }, function(err, user) {
                     if (err) return done(err);
                     if (user) {
                         console.log("Found existing");
-                        return done(null, user);
+                        user['token'] = token;
+                        user['refreshToken'] = refreshToken;
+                        user.save(function(err, updatedUser){
+                            return done(null, updatedUser);
+                        });
                     } else {
                         // if the user is new, then
                         // create a new user, and create default lists
                         profile['token'] = token;
+                        profile['refreshToken'] = refreshToken;
                         var newUser = new User(profile);
                         var newBoard = new Board({user: newUser._id});
                         newUser.boards.push(newBoard);

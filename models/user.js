@@ -17,6 +17,8 @@ var userSchema = new Schema({
   emails:       Array,
   userName:     String,
   photos:       Array,
+  token:        String,
+  refreshToken: String,
   boards:       [{ type: Schema.Types.ObjectId, ref: 'Board' }]
 });
 

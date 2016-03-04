@@ -217,7 +217,7 @@ router.post("/company", function(req,res,next){
 router.get('/company', function(req,res,next){
 	Company.find({_id: req.query.companyId}, function(err, company){
 		if(err) return handleError(err);
-		if(company){ 
+		if(company){
 			console.log(company);
 			res.send(company);
 		}
@@ -231,7 +231,7 @@ router.get('/company', function(req,res,next){
 
 /* POST a new job with given parameters */
 router.post("/job", function(req,res,next){
-	var job = new Job({"jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company});
+	var job = new Job({"messages":[], "jobTitle": req.body.jobTitle, "cities": req.body.cities, "list": req.body.list, "company": req.body.company});
 	List.findOne({_id:req.body.list}, function(err,list) {
 		if (err) throw err;
 		if (list) {

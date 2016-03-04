@@ -52,7 +52,6 @@ var NewJobForm    = React.createClass({
   },
 
   handleCompanyChange: function(e) {
-    console.log(e.target.value);
     Glassdoor.getResponseForCompany(e.target.value, function(response) {
       console.log(response);
       this.setState({glassdoorCompanies: response});
@@ -61,7 +60,6 @@ var NewJobForm    = React.createClass({
   },
 
   handlePositionChange: function(e) {
-    console.log(e.target.value);
     this.setState({positionTitle: e.target.value});
   },
 
