@@ -8,10 +8,10 @@
 var parameters = {
     "v":    "1",
     "format":"json",
-    "t.p":  "56346",
-    "t.k":  "evsFdSDtY2K",
-    "userip": "128.189.89.205",
-    "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36",
+    "t.p":  "56694",
+    "t.k":  "c27Cc11CpNS",
+    "userip": "162.158.146.58",
+    "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36",
     "action":"employers",
     "callback":"?"
   };
@@ -20,8 +20,8 @@ var Glassdoor = {
   URL:       "https://api.glassdoor.com/api/api.htm?",
   Version:      "1",
   Format:       "json",
-  PartnerID:    "56346",
-  PartnerKey:   "evsFdSDtY2K",
+  PartnerID:    "56694",
+  PartnerKey:   "c27Cc11CpNS",
   Action:       "employers",
 
   getResponseForCompany: function(companySearch,callback) {

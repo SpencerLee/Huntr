@@ -194,16 +194,103 @@ var Store = assign({}, EventEmitter.prototype, {
           sendJobInfo([174,174,174],"/images/nologo.png");
         }
   },
+  persistListInSwitch: function(listObj, jobIdToRmv){
+    $.ajax({
+      type: "PUT",
+      url: "http://localhost:3000/api/list",
+      data: {
+        list_id: listObj.list_id,
+        name: listObj.name,
+        iconName: listObj.iconName,
+        board: listObj.board,
+        job: null,
+        jobRmv: jobIdToRmv
+      },
+      success: function(list){
+        list
+      }
+    });
+  },
+  persitJobInSwitch: function(jobObj, listObject, jobRmv) {
+    if(jobObj){
+      var promise = new Promise(function(resolve,reject) {
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost:3000/api/job",
+          data: {
+            job_id: jobObj.job_id,
+            jobTitle: jobObj.jobTitle,
+            cities: jobObj.cities,
+            list: jobObj.newLstId,
+            company: jobObj.company
+          },
+          listObject: listObject,
+          jobRmv: jobRmv,
+          success: function (job) {
+            var listObj = this.listObject;
+            var rmvJob = this.jobRmv;
+            var jobId = job._id;
+            $.ajax({
+              type: "PUT",
+              url: "http://localhost:3000/api/list",
+              data: {
+                list_id: listObj.list_id,
+                name: listObj.name,
+                iconName: listObj.iconName,
+                board: listObj.board,
+                job: jobId,
+                jobRmv: rmvJob
+              },
+              success: function (list) {
+                list
+                resolve();
+              }
+            });
+          }
+        });
+      });
+      promise.then();
+    }
+    else{
+      this.persistListInSwitch(listObject, jobRmv);
+    }
+  },
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
     if (listOne != listTwo) {
       // Remove from one list and add it to the other
       var tempJob = store.lists[listOne]["jobs"][indexOne];
       store.lists[listTwo]["jobs"].splice(indexTwo,0,tempJob);
       store.lists[listOne]["jobs"].splice(indexOne,1);
+      var list_1 = store.lists[listOne];
+      var list_2 = store.lists[listTwo];
+      var list_1Obj = {
+        list_id: list_1._id,
+        name: list_1.name,
+        iconName: list_1.iconName,
+        board: list_1.board,
+        jobs: list_1.jobs
+      };
+      var list_2Obj = {
+        list_id: list_2._id,
+        name: list_2.name,
+        iconName: list_2.iconName,
+        board: list_2.board,
+        jobs: list_2.jobs
+      };
+      var jobObj = {
+        job_id: tempJob._id,
+        jobTitle: tempJob.jobTitle,
+        cities: tempJob.cities,
+        newLstId: list_2._id,
+        company: tempJob.company._id
+      };
+      this.persitJobInSwitch(null, list_1Obj, tempJob._id);
+      this.persitJobInSwitch(jobObj, list_2Obj, null);
+
     } else {
       // Swap Them
       var tempJob = store.lists[listOne]["jobs"][indexOne];
-      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo]
+      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo];
       store.lists[listTwo]["jobs"][indexTwo] = tempJob;
     }
 
@@ -257,4 +344,4 @@ var Store = assign({}, EventEmitter.prototype, {
 });
 
 
-module.exports = Store
+module.exports = Store;

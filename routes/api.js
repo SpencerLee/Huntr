@@ -46,7 +46,6 @@ router.get("/board", function(req,res,next){
 	
 });
 
-
 /* Initial Dashboard Request */
 //===============================
 
@@ -133,7 +132,7 @@ router.post('/board', function(req,res,next){
 			res.send(board);
 		}
 	})
-})
+});
 
 /* GET board given boardId*/
 router.get("/board", function(req,res,next){
@@ -148,7 +147,6 @@ router.get("/board", function(req,res,next){
 			res.send("we're closed");
 		}
 	});
-	
 });
 
 // List
@@ -164,7 +162,6 @@ router.post("/list", function(req,res,next){
 			res.send(list);
 		}
 	});
-
 });
 
 /* GET a list by listId */
@@ -181,6 +178,27 @@ router.get("/list", function(req,res,next){
 		}
 	});
 
+});
+/**
+ * updates a list with a body
+ */
+router.put("/list", function(req, res, next){
+	List.findById(req.body.list_id, function(err, list){
+		if(err) return handleError(err);
+		if(list){
+			list.name = req.body.name;
+			list.iconName = req.body.iconName;
+			list.board = req.body.board;
+			list.setJobs(req.body.job, req.body.jobRmv);
+			list.save(function(err){
+				if(err) res.send(err);
+				res.send(list);
+			});
+		}
+		else{
+			res.send("900")
+		}
+	})
 });
 
 /* DELETE a list with a given listId */
@@ -256,18 +274,24 @@ router.get('/job', function(req,res,next){
 		}
 	})
 });
-
-
-/* PUT a job with a given jobId in a new list with given listId */
+/**
+ * updates a job using a body
+ */
 router.put('/job',function(req,res,next){
-	Job.find({_id: req.body.jobId}, function(err, job){
+	Job.findById(req.body.job_id, function(err, job){
 		if(err) return handleError(err);
 		if(job){
-			job.list = req.body.newList;
+			job.title = req.body.jobTitle;
+			job.cities = req.body.cities;
+			job.list = req.body.list;
+			job.company = req.body.company;
 			job.save(function(err){
-				if(err) return handleError(err);
+				if(err) res.send(err);
 				res.send(job);
-			})
+			});
+		}
+		else{
+			res.send("900");
 		}
 	})
 });
