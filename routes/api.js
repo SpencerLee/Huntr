@@ -38,7 +38,6 @@ router.get("/board", function(req,res,next){
 	
 });
 
-
 /* Initial Dashboard Request */
 //===============================
 
@@ -172,7 +171,9 @@ router.get("/list", function(req,res,next){
 	});
 
 });
-
+/**
+ * updates a list with a body
+ */
 router.put("/list", function(req, res, next){
 	List.findById(req.body.list_id, function(err, list){
 		if(err) return handleError(err);
@@ -265,9 +266,9 @@ router.get('/job', function(req,res,next){
 		}
 	})
 });
-
-
-/* PUT a job with a given jobId in a new list with given listId */
+/**
+ * updates a job using a body
+ */
 router.put('/job',function(req,res,next){
 	Job.findById(req.body.job_id, function(err, job){
 		if(err) return handleError(err);
@@ -276,7 +277,6 @@ router.put('/job',function(req,res,next){
 			job.cities = req.body.cities;
 			job.list = req.body.list;
 			job.company = req.body.company;
-
 			job.save(function(err){
 				if(err) res.send(err);
 				res.send(job);

@@ -135,7 +135,7 @@ var Store = assign({}, EventEmitter.prototype, {
           this.emitChange();
         }.bind(this));
   },
-  persistListSwitch: function(listObj, jobIdToRmv){
+  persistListInSwitch: function(listObj, jobIdToRmv){
     $.ajax({
       type: "PUT",
       url: "http://localhost:3000/api/list",
@@ -144,7 +144,6 @@ var Store = assign({}, EventEmitter.prototype, {
         name: listObj.name,
         iconName: listObj.iconName,
         board: listObj.board,
-        jobs: listObj.jobs,
         job: null,
         jobRmv: jobIdToRmv
       },
@@ -153,7 +152,7 @@ var Store = assign({}, EventEmitter.prototype, {
       }
     });
   },
-  persitJobSwitcher: function(jobObj, listObject, jobRmv) {
+  persitJobInSwitch: function(jobObj, listObject, jobRmv) {
     if(jobObj){
       var promise = new Promise(function(resolve,reject) {
         $.ajax({
@@ -172,12 +171,6 @@ var Store = assign({}, EventEmitter.prototype, {
             var listObj = this.listObject;
             var rmvJob = this.jobRmv;
             var jobId = job._id;
-            var listJobId = [job._id];
-            this.listObject.jobs.forEach(function (preJob) {
-              if (preJob._id != job._id) {
-                listJobId.push(preJob._id);
-              }
-            });
             $.ajax({
               type: "PUT",
               url: "http://localhost:3000/api/list",
@@ -186,7 +179,6 @@ var Store = assign({}, EventEmitter.prototype, {
                 name: listObj.name,
                 iconName: listObj.iconName,
                 board: listObj.board,
-                jobs: listJobId,
                 job: jobId,
                 jobRmv: rmvJob
               },
@@ -201,15 +193,9 @@ var Store = assign({}, EventEmitter.prototype, {
       promise.then();
     }
     else{
-      var listJobId = [];
-      listObject.jobs.forEach(function(job){
-        listJobId.push(job._id);
-      });
-      listObject.jobs = listJobId;
-      this.persistListSwitch(listObject, jobRmv)
+      this.persistListInSwitch(listObject, jobRmv);
     }
   },
-
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
     if (listOne != listTwo) {
       // Remove from one list and add it to the other
@@ -239,8 +225,8 @@ var Store = assign({}, EventEmitter.prototype, {
         newLstId: list_2._id,
         company: tempJob.company._id
       };
-      this.persitJobSwitcher(null, list_1Obj, tempJob._id);
-      this.persitJobSwitcher(jobObj, list_2Obj, null);
+      this.persitJobInSwitch(null, list_1Obj, tempJob._id);
+      this.persitJobInSwitch(jobObj, list_2Obj, null);
 
     } else {
       // Swap Them
@@ -275,4 +261,4 @@ var Store = assign({}, EventEmitter.prototype, {
 });
 
 
-module.exports = Store
+module.exports = Store;
