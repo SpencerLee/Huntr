@@ -189,7 +189,8 @@ router.put("/list", function(req, res, next){
 			list.name = req.body.name;
 			list.iconName = req.body.iconName;
 			list.board = req.body.board;
-			list.setJobs(req.body.job, req.body.jobRmv);
+			list.setJobs(req.body.job, req.body.jobRmv,
+				req.body.index1, req.body.index2, req.body.index3);
 			list.save(function(err){
 				if(err) res.send(err);
 				res.send(list);

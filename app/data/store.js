@@ -204,14 +204,17 @@ var Store = assign({}, EventEmitter.prototype, {
         iconName: listObj.iconName,
         board: listObj.board,
         job: null,
-        jobRmv: jobIdToRmv
+        jobRmv: jobIdToRmv,
+        index1: listObj.index1,
+        index2: listObj.index2,
+        index3: listObj.index3
       },
       success: function(list){
         list
       }
     });
   },
-  persitListInSwitch: function(jobObj, listObject, jobRmv) {
+  persistListInSwitch: function(jobObj, listObject, jobRmv) {
     if(jobObj){
       var promise = new Promise(function(resolve,reject) {
         $.ajax({
@@ -240,7 +243,10 @@ var Store = assign({}, EventEmitter.prototype, {
                 iconName: listObj.iconName,
                 board: listObj.board,
                 job: jobId,
-                jobRmv: rmvJob
+                jobRmv: rmvJob,
+                index1: listObj.index1,
+                index2: listObj.index2,
+                index3: listObj.index3
               },
               success: function (list) {
                 list
@@ -256,6 +262,26 @@ var Store = assign({}, EventEmitter.prototype, {
       this.persistListInSwitchHelper(listObject, jobRmv);
     }
   },
+  persistListOrder: function(listObj) {
+    $.ajax({
+      type: "PUT",
+      url: "http://localhost:3000/api/list",
+      data: {
+        list_id: listObj.list_id,
+        name: listObj.name,
+        iconName: listObj.iconName,
+        board: listObj.board,
+        job: null,
+        jobRmv: null,
+        index1: listObj.index1,
+        index2: listObj.index2,
+        index3: listObj.index3
+      },
+      success: function (list) {
+        list
+      }
+    });
+  },
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
     if (listOne != listTwo) {
       // Remove from one list and add it to the other
@@ -269,14 +295,20 @@ var Store = assign({}, EventEmitter.prototype, {
         name: list_1.name,
         iconName: list_1.iconName,
         board: list_1.board,
-        jobs: list_1.jobs
+        jobs: list_1.jobs,
+        index1: indexOne,
+        index2: indexTwo,
+        index3: indexTwo + 1
       };
       var list_2Obj = {
         list_id: list_2._id,
         name: list_2.name,
         iconName: list_2.iconName,
         board: list_2.board,
-        jobs: list_2.jobs
+        jobs: list_2.jobs,
+        index1: indexOne,
+        index2: indexTwo,
+        index3: indexTwo + 1
       };
       var jobObj = {
         job_id: tempJob._id,
@@ -286,16 +318,33 @@ var Store = assign({}, EventEmitter.prototype, {
         company: tempJob.company._id,
         messages: tempJob.messages
       };
-      this.persitListInSwitch(null, list_1Obj, tempJob._id);
-      this.persitListInSwitch(jobObj, list_2Obj, null);
+      this.persistListInSwitch(null, list_1Obj, tempJob._id);
+      this.persistListInSwitch(jobObj, list_2Obj, null);
 
     } else {
-      // Swap Them
+      // if moving from bellow up move jobs down
       var tempJob = store.lists[listOne]["jobs"][indexOne];
-      store.lists[listOne]["jobs"][indexOne] = store.lists[listTwo]["jobs"][indexTwo];
-      store.lists[listTwo]["jobs"][indexTwo] = tempJob;
+      if(indexOne > indexTwo){
+        store.lists[listOne]["jobs"].splice(indexOne, 1);
+        store.lists[listOne]["jobs"].splice(indexTwo, 0, tempJob);
+      }
+      //else if moving from above down move jobs up
+      else{
+        store.lists[listOne]["jobs"].splice(indexTwo + 1, 0, tempJob);
+        store.lists[listOne]["jobs"].splice(indexOne, 1);
+      }
+      var list_1 = store.lists[listOne];
+      var list_1Obj = {
+        list_id: list_1._id,
+        name: list_1.name,
+        iconName: list_1.iconName,
+        board: list_1.board,
+        index1: indexOne,
+        index2: indexTwo,
+        index3: indexTwo + 1
+      };
+      this.persistListOrder(list_1Obj)
     }
-
     this.emitChange();
   },
   updateJob: function(id, updates) {

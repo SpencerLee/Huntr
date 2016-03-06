@@ -12,28 +12,37 @@ var listSchema = new Schema({
   iconName: String,
   board: {type: Schema.Types.ObjectId, ref: 'Board'},
   jobs: [{ type: Schema.Types.ObjectId, ref: 'Job' }]
-  //jobs: [String]
 });
 
 /**
- * Used to add or remove job from jobs
- * @param job the job id that is to be added to the list
- * use null if non is to be added
- * @param jobRmv: the job id that is to be removed from the
- * job list
+ * Used to add, remove, or reorder jobs
+ * note we don't add the one to indextwo here
+ * because they are no longer int when they leave
+ * the client.
+ * @param job jobId to add -- if none give null
+ * @param jobRmv jobId to remove -- if non give null
+ * @param indexOne index where item is being moved from
+ * @param indexTwo index where item is being moved to
+ * @param indexThree index where item is being moved to plus 1
  */
-listSchema.methods.setJobs = function(job, jobRmv){
+listSchema.methods.setJobs = function(job, jobRmv, indexOne, indexTwo, indexThree){
   if(job){
-    this.jobs.push([mongoose.Types.ObjectId(job)]);
+    var tempJobId = mongoose.Types.ObjectId(job);
+    this.jobs.splice(indexTwo,0,tempJobId);
   }
-  if(jobRmv){
-    var newJobs = [];
-    this.jobs.forEach(function(jobId){
-      if(jobId != jobRmv){
-        newJobs.push(jobId);
-      }
-    });
-    this.jobs = newJobs
+  else if(jobRmv){
+    this.jobs.splice(indexOne,1);
+  }
+  else{
+    var tempJobId = this.jobs[indexOne];
+    if(indexOne > indexTwo){
+      this.jobs.splice(indexOne, 1);
+      this.jobs.splice(indexTwo, 0, tempJobId);
+    }
+    else{
+      this.jobs.splice(indexThree, 0, tempJobId);
+      this.jobs.splice(indexOne, 1);
+    }
   }
 };
 
