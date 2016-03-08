@@ -111,7 +111,6 @@ var Store = assign({}, EventEmitter.prototype, {
         }
       }
     }
-
     return null;
   },
 
@@ -121,80 +120,100 @@ var Store = assign({}, EventEmitter.prototype, {
 
   addJob: function(listId,newcompany,positionTitle) {
 
-        var sendJobInfo = function(rgbColor,logoUrl) {
-          var promise = new Promise(function(resolve,reject) {
+    var sendJobInfo = function(rgbColor,logoUrl) {
+      var promise = new Promise(function(resolve,reject) {
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/api/company",
+          data: {
+            name: newcompany.name,
+            logoUrl: logoUrl,
+            hexColor: 'rgba(' + rgbColor[0] + "," + rgbColor[1] + "," + rgbColor[2] + ",0.85)",
+            glassdoorId: newcompany.id
+          },
+          success: function(company) {
             $.ajax({
               type: "POST",
-              url: "http://localhost:3000/api/company",
+              url: "http://localhost:3000/api/job",
               data: {
-                name: newcompany.name,
-                logoUrl: logoUrl,
-                hexColor: 'rgba(' + rgbColor[0] + "," + rgbColor[1] + "," + rgbColor[2] + ",0.85)",
-                glassdoorId: newcompany.id
+                jobTitle: positionTitle,
+                cities: [],
+                list: listId,
+                company: company._id
               },
-              success: function(company) {
-                $.ajax({
-                  type: "POST",
-                  url: "http://localhost:3000/api/job",
-                  data: {
-                    jobTitle: positionTitle,
-                    cities: [],
-                    list: listId,
-                    company: company._id
-                  },
-                  success: function(job) {
-                    for (var idx in store.lists) {
-                      var list = store.lists[idx];
-                      job.company = company;
-                      if (list._id == listId) {
-                        store.lists[idx].jobs.push(job);
-                        resolve();
-                      }
-                    };
+              success: function(job) {
+                for (var idx in store.lists) {
+                  var list = store.lists[idx];
+                  job.company = company;
+                  if (list._id == listId) {
+                    store.lists[idx].jobs.push(job);
+                    resolve();
                   }
-                });
-
+                };
               }
             });
-          });
 
-          promise.then(function() {
-            this.emitChange();
-          }.bind(this));
+          }
+        });
+      });
+
+      promise.then(function() {
+        this.emitChange();
+      }.bind(this));
+    }.bind(this);
+    var canGetCompanyLogo = new Promise(function(resolve, reject){
+      $.ajax({
+        type: "GET",
+        url: "//logo.clearbit.com/" + newcompany.website.replace("www.", ""),
+        success: function(response){
+          if(response == "Welcome to the Logo API"){
+            resolve(false);
+          }
+          else{
+            resolve(true);
+          }
+        },
+        error: function(url, options){
+          resolve(false);
+        }
+      })
+    });
+    canGetCompanyLogo.then(function(companyLogoAvailable){
+      if (companyLogoAvailable/* && newcompany.squareLogo && newcompany.squareLogo != ""*/) {
+        // Code for getting color from company logo
+        var canvas  = document.createElement('canvas');
+        var ctx     = canvas.getContext("2d");
+        var image   = document.createElement('img');
+        image.crossOrigin = "anonymous";
+
+        image.style.display   = 'none';
+        canvas.style.display  = 'none';
+
+        image.onload = function(){
+          ctx.drawImage(image,10,10);
+          var colorThief  = new ColorThief();
+          var rgbColor    = colorThief.getColor(canvas);
+          console.log("Found color");
+          console.log(rgbColor);
+          // Now that we have all the info we need,
+          // send out the updates to the server
+          image.parentNode.removeChild(image);
+          canvas.parentNode.removeChild(canvas);
+          sendJobInfo(rgbColor,"//logo.clearbit.com/" + newcompany.website.replace("www.", ""))
         }.bind(this);
 
-        if (newcompany.squareLogo && newcompany.squareLogo != "") {
-          // Code for getting color from company logo
-          var canvas  = document.createElement('canvas');
-          var ctx     = canvas.getContext("2d");
-          var image   = document.createElement('img');
-
-          image.style.display   = 'none';
-          canvas.style.display  = 'none';
-
-          image.onload = function(){
-            ctx.drawImage(image,10,10);
-            var colorThief  = new ColorThief();
-            var rgbColor    = colorThief.getColor(canvas);
-            console.log("Found color");
-            console.log(rgbColor);
-            // Now that we have all the info we need, 
-            // send out the updates to the server
-            image.parentNode.removeChild(image);
-            canvas.parentNode.removeChild(canvas);
-            sendJobInfo(rgbColor,newcompany.squareLogo);
-          }.bind(this);
-
-          image.crossOrigin = "Anonymous";
-          image.src=newcompany.squareLogo;
-          console.log("This is the company logo url" + newcompany.squareLogo);
-          document.body.appendChild(canvas);
-          document.body.appendChild(image);
-        } else {
-          sendJobInfo([174,174,174],"/images/nologo.png");
-        }
+        image.crossOrigin = "anonymous";
+        image.src="//logo.clearbit.com/"+ newcompany.website.replace("www.", "");
+        image.crossOrigin = "Anonymous";
+        console.log("This is the company logo url" + newcompany.squareLogo);
+        document.body.appendChild(canvas);
+        document.body.appendChild(image);
+      } else {
+        sendJobInfo([174,174,174],"/images/nologo.png");
+      }
+    });
   },
-  persistListInSwitchHelper: function(listObj, jobIdToRmv){
+  updateJobsRemove: function(listObj, jobIdToRmv){
     $.ajax({
       type: "PUT",
       url: "http://localhost:3000/api/list",
@@ -214,7 +233,7 @@ var Store = assign({}, EventEmitter.prototype, {
       }
     });
   },
-  persistListInSwitch: function(jobObj, listObject, jobRmv) {
+  updateJobsAdd: function(jobObj, listObject, jobRmv) {
     if(jobObj){
       var promise = new Promise(function(resolve,reject) {
         $.ajax({
@@ -259,10 +278,10 @@ var Store = assign({}, EventEmitter.prototype, {
       promise.then();
     }
     else{
-      this.persistListInSwitchHelper(listObject, jobRmv);
+      this.updateJobsRemove(listObject, jobRmv);
     }
   },
-  persistListOrder: function(listObj) {
+  updateJobsOrder: function(listObj) {
     $.ajax({
       type: "PUT",
       url: "http://localhost:3000/api/list",
@@ -318,8 +337,8 @@ var Store = assign({}, EventEmitter.prototype, {
         company: tempJob.company._id,
         messages: tempJob.messages
       };
-      this.persistListInSwitch(null, list_1Obj, tempJob._id);
-      this.persistListInSwitch(jobObj, list_2Obj, null);
+      this.updateJobsAdd(null, list_1Obj, tempJob._id);
+      this.updateJobsAdd(jobObj, list_2Obj, null);
 
     } else {
       // if moving from bellow up move jobs down
@@ -343,7 +362,7 @@ var Store = assign({}, EventEmitter.prototype, {
         index2: indexTwo,
         index3: indexTwo + 1
       };
-      this.persistListOrder(list_1Obj)
+      this.updateJobsOrder(list_1Obj)
     }
     this.emitChange();
   },
