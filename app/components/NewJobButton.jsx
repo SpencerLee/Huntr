@@ -12,17 +12,23 @@ var collectTarget = function(connect) {
 };
 
 var buttonTarget = {
-  drop: function(props, monitor, component) {
+  hover: function(props, monitor, component) {
     var dragIndex = monitor.getItem().originalCardIndex;
     var dragList = monitor.getItem().originalListIndex;
     var hoverIndex = 0;
     var hoverList = props.listIndex;
+    if (dragIndex === hoverIndex && dragList === hoverList) {
+      return;
+    }
+
     console.log("Drop info");
     console.log(dragIndex);
     console.log(dragList);
     console.log(hoverIndex);
     console.log(hoverList);
     Store.moveCard(dragIndex,dragList, hoverIndex,hoverList);
+    monitor.getItem().originalCardIndex = hoverIndex;
+    monitor.getItem().originalListIndex = hoverList;
   }
 };
 

@@ -6,17 +6,36 @@ var DropTarget = require('react-dnd').DropTarget;
 var Store     = require('../data/store');
 
 var cardTarget = {
-  drop: function(props, monitor, component) {
+  // drop: function(props, monitor, component) {
+  //   var dragIndex = monitor.getItem().originalCardIndex;
+  //   var dragList = monitor.getItem().originalListIndex;
+  //   var hoverIndex = props.indexInList;
+  //   var hoverList = props.listIndex;
+  //   console.log("Drop info");
+  //   console.log(dragIndex);
+  //   console.log(dragList);
+  //   console.log(hoverIndex);
+  //   console.log(hoverList);
+  //   Store.moveCard(dragIndex,dragList, hoverIndex,hoverList);
+  // },
+  hover: function(props, monitor, component) {
     var dragIndex = monitor.getItem().originalCardIndex;
     var dragList = monitor.getItem().originalListIndex;
     var hoverIndex = props.indexInList;
     var hoverList = props.listIndex;
+
+    if (dragIndex === hoverIndex && dragList === hoverList) {
+      return;
+    }
+
     console.log("Drop info");
     console.log(dragIndex);
     console.log(dragList);
     console.log(hoverIndex);
     console.log(hoverList);
     Store.moveCard(dragIndex,dragList, hoverIndex,hoverList);
+    monitor.getItem().originalCardIndex = hoverIndex;
+    monitor.getItem().originalListIndex = hoverList;
   }
 };
 
@@ -24,6 +43,7 @@ var cardTarget = {
 var cardSource = {
   beginDrag: function(props) {
     return {
+      id: props.id,
       originalListIndex: props.listIndex,
       originalCardIndex: props.indexInList,
     };
@@ -33,7 +53,7 @@ var cardSource = {
 var collectTarget = function(connect) {
     return {
       connectDropTarget: connect.dropTarget(),
-    } 
+    }
 };
 
 var collectSource = function(connect, monitor) {
@@ -73,8 +93,8 @@ var JobCard    = React.createClass({
 
     return connectDragSource(connectDropTarget(
       <div>
-        <img src="/images/delete.png" className="deleteButton" onClick={this.onDeleteClick}/>
-        <div onClick={this.onClick} className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0.5 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'pointer'}}>
+        <img src="/images/delete.png" style={{opacity: isDragging ? 0 : 0.15}} className="deleteButton" onClick={this.onDeleteClick}/>
+        <div onClick={this.onClick} className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'pointer'}}>
           <img id={this.props.company._id} className={"logo floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
           <div className="floatLeft">
             <p className="semiBold regularSize">{this.props.company.name}</p>
