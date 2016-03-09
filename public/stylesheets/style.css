@@ -14,7 +14,8 @@ ul {
 }
 
 li {
-  list-style: none
+  list-style: none;
+  display: block;
 }
 /* Font classes*/
 .light {
@@ -65,7 +66,10 @@ li {
   position: relative;
   float: left;
 }
-
+.floatRight {
+  position: relative;
+  float: right;
+}
 .seethrough30 {
   opacity: 0.3;
 }
@@ -137,6 +141,10 @@ li {
 .jobCard p {
   text-shadow: 0px 1px 1px rgba(0,0,0,0.1);
   margin: 0px 0px 0px 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 150px;
+  overflow: hidden;
 }
 
 .newJobForm {
@@ -147,19 +155,25 @@ li {
   margin-left: 40%;
 }
 
+.newJobForm button {
+    position: relative;
+    bottom: 129px;
+    left: 114px;
+}
+
 .textField {
-  width: 200px;
+  width: 250px;
   height: 20px;
   border-style: none;
   border-radius: 2px;
-  box-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.25);
   margin-bottom: 8px;
   padding: 10px;
   font-family: "Source Sans Pro";
 }
 
 .submitButton {
-    width: 220px;
+    width: 270px;
     background-color: rgba(13,32,254,0.75);
     border-style: none;
     border-radius: 2px;
@@ -199,8 +213,8 @@ li {
 .dropdownContainer {
   position: relative;
   background-color: white;
-  top: -91px;
-  box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+  top: -115px;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.25);
   border-radius: 2px;
   overflow: scroll;
   height: 130px;
@@ -208,15 +222,21 @@ li {
 
 .dropdownContainer p {
   margin: 0;
-  padding: 10px;
+  padding: 15px;
   text-align: left;
   height: 15px;
-  color: #ddd
+  color: #555;
+  overflow: hidden;
+  width: 240px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .dropdownContainer p:hover {
-  background-color: #eee;
-  color: #ddd;
+  background-color: #0076FF;
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
 }
 
 .header span.logo {
@@ -261,12 +281,13 @@ li {
 
 .deleteButton {
   display: block;
-  opacity: 0.2;
+  opacity: 0.15;
   width: 10px;
-  left: 228px;
+  left: 247px;
   position: relative;
   margin-bottom: -10px;
-  bottom: 8px;
+  top: 11px;
+  cursor: pointer;
 }
 
 .deleteButton:hover {
@@ -322,14 +343,14 @@ li {
   background-color: rgba(0,0,0,0.03);
   position: relative;
   float: right;
-  width: 170px;
+  width: 150px;
   height: 500px;
-  padding: 30px 0px 30px 20px;
+  padding: 30px 25px 30px 25px;
   border-left: 1px solid #ddd;
 }
 
 .sideBar li {
-  opacity: 0.4;
+  opacity: 0.7;
   font-size: 13px;
 }
 .mainSection {
@@ -348,23 +369,31 @@ li {
   border: 1px solid #eee;
 }
 
-.emailSearchButton {
-  background-color: rgba(13,32,254,0.75);
+.emailSearchBox button {
   position: relative;
   bottom: 41px;
   left: 247px;
+}
+
+.searchButton {
+  background-color: rgba(13,32,254,0.75);
   border-radius: 2px;
   width: 25px;
   height: 25px;
   border-style: none;
 }
 
-.emailSearchButton img {
+.searchButton:hover {
+  box-shadow: 0px 0px 4px #50E3C2;
+  cursor: pointer;
+}
+
+.searchButton img {
   width: 13px;
 }
 
 .contactTimeline {
-  margin-top: 100px
+  margin-top: 110px
 }
 
 .contactTimelineHeader {
@@ -404,4 +433,16 @@ li {
 
 .messageDetail p.snippet {
   color: rgba(0,0,0,0.4);
+}
+
+.website {
+  color: #0076FF;
+}
+
+.jobHeader p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+  max-width: 190px;
 }

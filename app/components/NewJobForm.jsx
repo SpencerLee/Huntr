@@ -28,7 +28,8 @@ var NewJobForm    = React.createClass({
         <form autoComplete="off" className="newJobForm" onSubmit={this.handleSubmit}>
           <input value={this.state.companyName} onChange={this.handleCompanyChange} placeholder="Company" className="textField regularSize" type="text" name="companyName"/><br/>
           <input value={this.state.positionTitle} onChange={this.handlePositionChange} placeholder="Position" className="textField regularSize" type="text" name="positionTitle"/><br/>
-          <input className="submitButton regularSize" type="submit" value="Create Job"/>
+          <input className="submitButton regularSize" type="submit" value="Create Job"/><br/>
+          <button onClick={this.handleSearch} className="searchButton"><img src="/images/searchIcon.png"/></button>
           {dropDown}
         </form>
       </div>
@@ -50,15 +51,15 @@ var NewJobForm    = React.createClass({
     this.setState({company: null, positionTitle: ''});
     Store.setCreatingNewJob(false,null);
   },
-
-  handleCompanyChange: function(e) {
-    Glassdoor.getResponseForCompany(e.target.value, function(response) {
+  handleSearch: function() {
+    Glassdoor.getResponseForCompany(this.state.companyName, function(response) {
       console.log(response);
       this.setState({glassdoorCompanies: response});
     }.bind(this));
-    this.setState({companyName: e.target.value});
   },
-
+  handleCompanyChange: function(e) {
+    this.setState({companyName: e.target.value, company: null});
+  },
   handlePositionChange: function(e) {
     this.setState({positionTitle: e.target.value});
   },

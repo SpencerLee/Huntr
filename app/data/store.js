@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var ColorThief = require('../color-thief.js');
-var mockInitialState = require('./mockData_getInitialState')
+// var mockInitialState = require('./mockData_getInitialState')
 
 // THIS IS OUR GLOBAL STATE
 // ========================
@@ -121,16 +121,22 @@ var Store = assign({}, EventEmitter.prototype, {
 
   addJob: function(listId,newcompany,positionTitle) {
 
-        var sendJobInfo = function(rgbColor,logoUrl) {
+        var sendJobInfo = function(rgbColor,logoUrl,hasALogo) {
           var promise = new Promise(function(resolve,reject) {
             $.ajax({
               type: "POST",
               url: "http://localhost:3000/api/company",
               data: {
-                name: newcompany.name,
-                logoUrl: logoUrl,
-                hexColor: 'rgba(' + rgbColor[0] + "," + rgbColor[1] + "," + rgbColor[2] + ",0.85)",
-                glassdoorId: newcompany.id
+                hasLogo:          hasALogo,
+                name:             newcompany.name,
+                website:          newcompany.website,
+                logoUrl:          logoUrl,
+                hexColor:         'rgba(' + rgbColor[0] + "," + rgbColor[1] + "," + rgbColor[2] + ",0.85)",
+                glassdoorId:      newcompany.id,
+                numberOfRatings:  newcompany.numberOfRatings,
+                industry:         newcompany.industry,
+                website:          newcompany.website,
+                overallRating:    newcompany.overallRating,
               },
               success: function(company) {
                 $.ajax({
@@ -163,35 +169,46 @@ var Store = assign({}, EventEmitter.prototype, {
           }.bind(this));
         }.bind(this);
 
-        if (newcompany.squareLogo && newcompany.squareLogo != "") {
-          // Code for getting color from company logo
-          var canvas  = document.createElement('canvas');
-          var ctx     = canvas.getContext("2d");
-          var image   = document.createElement('img');
+        if (newcompany.website && newcompany.website != "") {
+          var logoUrl = "https://logo.clearbit.com/" + newcompany.website;
 
-          image.style.display   = 'none';
-          canvas.style.display  = 'none';
+          $.ajax({ 
+             url: logoUrl, 
+             success: function() {
+                // Code for getting color from company logo
+                var canvas  = document.createElement('canvas');
+                var ctx     = canvas.getContext("2d");
+                var image   = document.createElement('img');
 
-          image.onload = function(){
-            ctx.drawImage(image,10,10);
-            var colorThief  = new ColorThief();
-            var rgbColor    = colorThief.getColor(canvas);
-            console.log("Found color");
-            console.log(rgbColor);
-            // Now that we have all the info we need, 
-            // send out the updates to the server
-            image.parentNode.removeChild(image);
-            canvas.parentNode.removeChild(canvas);
-            sendJobInfo(rgbColor,newcompany.squareLogo);
-          }.bind(this);
+                image.style.display   = 'none';
+                canvas.style.display  = 'none';
 
-          image.crossOrigin = "Anonymous";
-          image.src=newcompany.squareLogo;
-          console.log("This is the company logo url" + newcompany.squareLogo);
-          document.body.appendChild(canvas);
-          document.body.appendChild(image);
+                image.onload = function(){
+                  ctx.drawImage(image,10,10);
+                  var colorThief  = new ColorThief();
+                  var rgbColor    = colorThief.getColor(canvas);
+                  console.log("Found color");
+                  console.log(rgbColor);
+                  // Now that we have all the info we need, 
+                  // send out the updates to the server
+                  image.parentNode.removeChild(image);
+                  canvas.parentNode.removeChild(canvas);
+                  sendJobInfo(rgbColor,logoUrl,true);
+                }.bind(this);
+
+                console.log("This is the company logo url" + logoUrl);
+                document.body.appendChild(canvas);
+                document.body.appendChild(image);
+                image.crossOrigin = "Anonymous";
+                image.src=logoUrl;
+             },
+             error: function(r,x) {
+              console.log(r);
+              sendJobInfo([174,174,174],"/images/nologo.png",false);
+             }
+          });
         } else {
-          sendJobInfo([174,174,174],"/images/nologo.png");
+          sendJobInfo([174,174,174],"/images/nologo.png",false);
         }
   },
   moveCard: function (indexOne,listOne,indexTwo,listTwo) {
@@ -240,7 +257,7 @@ var Store = assign({}, EventEmitter.prototype, {
   getUser: function() {
     return store.user;
   },
-  
+
   // Notifications
   // =========================
   

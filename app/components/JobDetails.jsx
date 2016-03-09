@@ -28,12 +28,13 @@ var JobDetails    = React.createClass({
               <div className="floatLeft" style={{marginLeft:18}}>
                 <p className="semiBold xxlargeSize" style={{margin:0,padding:0}}>{this.props.job.company.name}</p>
                 <p className="smallSize regular" style={{margin:0,padding:0, opacity: 0.4}}>{this.props.job.jobTitle}</p>
+                <a target="_blank" href={"http://" + this.props.job.company.website} className="website xsmallSize regular" style={{margin:0,padding:0, opacity: 0.6}}>{this.props.job.company.website}</a>
               </div>
             </div>
             <div className="jobTags"></div>
             <div className="contactTimeline">
               <div className="contactTimelineHeader">
-                <span className="semiBold regularSize">Contact Timeline</span><br/>
+                <span className="semiBold regularSize">Email Timeline</span><br/>
                 <span className="seethrough40 xsmallSize">{this.props.job.messages.length + " Messages"}</span>
               </div>
               {messageWidget}
@@ -49,13 +50,12 @@ var JobDetails    = React.createClass({
               </ul>
             </div>
             <div className="jobGlassdoorStats">
-              <p className="semiBold smallSize">Glassdoor Stats</p>
+              <p className="semiBold smallSize">Glassdoor Ratings</p>
               <ul>
-                <li>Rating: 5.0/5.0</li>
-                <li>CEO Approval: 5.0/5.0</li>
+                <li>Ratings <div className="bold floatRight" style={{ opacity: 1 }}>{this.props.job.company.numberOfRatings}</div></li>
+                <li>Overall Score <div className="bold floatRight" style={{ opacity: 1 }}>{this.props.job.company.overallRating}/5.0</div></li>
               </ul>
             </div>
-
           </div>
         </div>
       </div>

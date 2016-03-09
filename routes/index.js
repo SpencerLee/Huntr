@@ -21,12 +21,19 @@ router.get('/dashboard',isLoggedIn, function(req, res, next) {
 
 // AUTH
 // =======================
-router.get('/auth/google', passport.authenticate('google', { scope : [
-  'profile', 
-  'email',
-  'https://www.googleapis.com/auth/gmail.readonly',
+router.get('/auth/google', passport.authenticate('google', { scope : 
+    [
+    'profile', 
+    'email',
+    'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile'] }));
+    'https://www.googleapis.com/auth/userinfo.profile'
+    ],
+    accessType: 'offline', 
+    approvalPrompt: 'force'  
+  })
+);
+
 router.get('/auth/google/return*',
   passport.authenticate('google', { successRedirect: '/dashboard',
                                     failureRedirect: '/' }));

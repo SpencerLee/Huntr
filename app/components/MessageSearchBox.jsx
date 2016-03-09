@@ -16,7 +16,7 @@ var MessageSearchBox = React.createClass({
     return {
       messagesInSearch: [],
       selectedMessages: [],
-      searchQuery: "from:" + this.props.companyName.toLowerCase(),
+      searchQuery: "from:" + this.props.companyName.toLowerCase().replace(/ /g,''),
     }
   },
   render: function() {
@@ -29,7 +29,7 @@ var MessageSearchBox = React.createClass({
     return (
       <div className="emailSearchBox">
         <input onChange={this.handleQueryChange} value={this.state.searchQuery} placeholder="Search Gmail" className="emailSearchField smallSize" type="text" name="searchString"/><br/>
-        <button onClick={this.handleSearch} className="emailSearchButton" type="submit"><img src="/images/searchIcon.png"/></button>
+        <button onClick={this.handleSearch} className="searchButton" type="submit"><img src="/images/searchIcon.png"/></button>
         <div className="emailSearchResults">
           {this.state.messagesInSearch.map(function(message) {
             return <MessageDetail message={message}/>

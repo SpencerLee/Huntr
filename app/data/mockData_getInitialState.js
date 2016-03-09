@@ -1,4 +1,6 @@
 var initialBoardState = {
+  id: efasdf,
+  name:asdf,
   lists: [
     {_id:1,
       name:"Applied",

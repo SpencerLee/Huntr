@@ -42,7 +42,6 @@ var Passport = {
                     if (user) {
                         console.log("Found existing");
                         user['token'] = token;
-                        user['refreshToken'] = refreshToken;
                         user.save(function(err, updatedUser){
                             return done(null, updatedUser);
                         });

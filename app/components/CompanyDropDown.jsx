@@ -8,7 +8,7 @@ var Store     = require('../data/store');
 var CompanyOption = React.createClass({
   render: function() {
     return (
-          <p onClick={this.handleSelectCompany}> {this.props.company.name}</p>
+          <p onClick={this.handleSelectCompany}> {this.props.company.name} <span style={{ opacity: 0.3, marginLeft: 15}}>{this.props.company.industry}</span></p>
   )},
   handleSelectCompany: function () {
     this.props.onSelection(this.props.company);

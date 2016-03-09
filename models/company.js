@@ -12,9 +12,13 @@ var companySchema = new Schema({
   name: String,
   logoUrl: String,
   hexColor: String,
-  glassdoorId: Number,
+  glassdoorId: { type:String, required: true, unique: true },
   glassdoorKey: String,
-  location: String
+  location: String,
+  industry: String,
+  numberOfRatings: String,
+  overallRating: String,
+  website: String,  
 });
 
 var Company = mongoose.model('Company', companySchema);

@@ -6,7 +6,10 @@ var List 						= require('../models/boardlist');
 var City 						= require('../models/city');
 var Job 						= require('../models/job');
 var Company 				= require('../models/company');
-
+var fs      				= require('fs');
+var request 				= require('request');
+var path 						= require('path');
+var appDir 					= path.dirname(require.main.filename);
 
 /* RESPONSE CODES */
 
@@ -198,18 +201,32 @@ router.delete("/list",function(req,res,next){
 
 /* POST a new compnay with given parameters */
 router.post("/company", function(req,res,next){
+
 	console.log(req.body);
-	Company.create({"name": req.body.name, "logoUrl": req.body.logoUrl, "hexColor": req.body.hexColor, "glassdoorId": req.body.glassdoorId, "glassdoorKey": req.body.glassdoorKey, "location": req.body.location}, function(err,company){
-		if(err) return handleError(err);
-		if(company){
+	var newCompany = {
+		"name": req.body.name, 
+		"logoUrl": req.body.logoUrl, 
+		"hexColor": req.body.hexColor, 
+		"glassdoorId": req.body.glassdoorId, 
+		"location": req.body.location,
+		"numberOfRatings": req.body.numberOfRatings,
+		"overallRating": req.body.overallRating,
+		"website": req.body.website,
+		"industry": req.body.industry,
+	};
+
+	Company.update({ glassdoorId: req.body.glassdoorId}, newCompany, {upsert: true}, function(err, company) {
+		if(err) return console.log(err);
+		Company.findOne({glassdoorId: req.body.glassdoorId}, function(err,company) { 
+			if (req.body.hasLogo != "false") {
+				var filePath = "public/company_logo_" + company._id + ".png";
+				request(company.logoUrl).on('error', function(err) { console.log(err) }).pipe(fs.createWriteStream(filePath));
+	      console.log("The file was saved!");
+			};
 			console.log(company);
 			res.send(company);
-		}
-		else{
-			res.send("NO");
-		}
-	})
-
+		});
+	});
 });
 
 
