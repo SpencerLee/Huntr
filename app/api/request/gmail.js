@@ -10,7 +10,7 @@ var headerNames = {
 var Gmail = {
   getListOfMessages:function(userId, queryString, token, callback) {
     gapi.auth.setToken({
-      access_token: user.token
+      access_token: token
     });
     var restRequest = gapi.client.request({
       'path': '/gmail/v1/users/' + userId + '/messages',

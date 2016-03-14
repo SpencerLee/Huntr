@@ -6,6 +6,7 @@ var List 						= require('../models/boardlist');
 var City 						= require('../models/city');
 var Job 						= require('../models/job');
 var Company 				= require('../models/company');
+var User 						= require('../models/user');
 
 
 /* RESPONSE CODES */
@@ -20,7 +21,8 @@ var CODES 	= {
 
 /* GET users info by email. */
 router.get('/user', function(req, res, next) {
-	User.findOne({"email": req.query.email}, "_id email name userName passWord", function (err, user) {
+	User.findById(req.query.id, function (err, user) {
+		console.log(req.query.id);
 	  if (err) {
 			console.log(err);
 			return next(err);

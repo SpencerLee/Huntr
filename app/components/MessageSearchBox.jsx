@@ -40,11 +40,19 @@ var MessageSearchBox = React.createClass({
     );
   },
   handleSearch: function() {
-    // Make Gmail call, populate messagesInSearch, and reset component's state
-    Gmail.getListOfMessages(this.props.user.id,this.state.searchQuery,this.props.user.token, function(emails) {
-      console.log(emails);
-      this.setState({messagesInSearch: emails});
-    }.bind(this));
+    var that = this;
+    var newToken = new Promise(function(resolve, reject){
+      var token =  Store.getNewToken(that.props.user._id);
+      if(token !== undefined){
+        resolve(token);
+      }
+    });
+    newToken.then(function(newToken){
+      Gmail.getListOfMessages(that.props.user.id,that.state.searchQuery, newToken, function(emails) {
+        console.log(emails);
+        that.setState({messagesInSearch: emails});
+      }.bind(this));
+    });
   },
   handleAddMessages: function() {
     // Call store to add all selectedMessages to specific job... and rerender

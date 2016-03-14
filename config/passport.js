@@ -42,7 +42,15 @@ var Passport = {
                     if (user) {
                         console.log("Found existing");
                         user['token'] = token;
-                        user['refreshToken'] = refreshToken;
+
+                        // the refresh token only given first time user gives approval
+                        // to offline access, so only add to database when is undefined in
+                        // user database.
+                        if(!user['refreshToken']){
+                            user['refreshToken'] = refreshToken;
+                        }
+
+                        console.log("here I am if i exist" + refreshToken);
                         user.save(function(err, updatedUser){
                             return done(null, updatedUser);
                         });

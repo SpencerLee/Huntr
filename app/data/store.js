@@ -397,6 +397,45 @@ var Store = assign({}, EventEmitter.prototype, {
   getUser: function() {
     return store.user;
   },
+
+  /**
+   * obtains the users refresh token and uses the refresh token to obtain
+   * the users acess token from the google api
+   * @param id: the _id for the user defined by mongodb
+   * @returns {Promise|*} an access token promise obtain from GoogleApi
+   *
+   */
+  getNewToken: function(id){
+    var refreshToken = new Promise(function(resolve, reject){
+      $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/api/user",
+        data: { id: id },
+        success: function(response) {
+          response
+          resolve(response.refreshToken)
+        }
+      });
+    });
+    return refreshToken.then(function(refreshToken){
+      var newToken = new Promise(function(resolve, reject){
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:3000/googleToken",
+          data: { refreshToken: refreshToken},
+          success: function(response) {
+            resolve(response)
+          }
+        });
+      });
+      return newToken.then(function (newTokeObj) {
+
+        return newTokeObj.token;
+
+      })
+    });
+
+  },
   
   // Notifications
   // =========================
