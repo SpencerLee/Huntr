@@ -290,6 +290,17 @@ li {
   cursor: pointer;
 }
 
+.deleteButtonDragging {
+  display: block;
+  opacity: 0;
+  width: 10px;
+  left: 247px;
+  position: relative;
+  margin-bottom: -10px;
+  top: 11px;
+  cursor: pointer;
+}
+
 .deleteButton:hover {
   opacity: 0.5;
 }

@@ -93,7 +93,7 @@ var JobCard    = React.createClass({
 
     return connectDragSource(connectDropTarget(
       <div>
-        <img src="/images/delete.png" style={{opacity: isDragging ? 0 : 0.15}} className="deleteButton" onClick={this.onDeleteClick}/>
+        <img src="/images/delete.png" className={isDragging ? "deleteButtonDragging":"deleteButton" } onClick={this.onDeleteClick}/>
         <div onClick={this.onClick} className="jobCard" style={{ backgroundColor: this.props.color,opacity: isDragging ? 0 : 1,fontSize: 25,fontWeight: 'bold',cursor: 'pointer'}}>
           <img id={this.props.company._id} className={"logo floatLeft " + this.props.company.name} src={this.props.company.logoUrl} />
           <div className="floatLeft">

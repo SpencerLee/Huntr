@@ -8,9 +8,9 @@ var MessageDetail    = React.createClass({
   render: function() {
     return (
       <div className="messageDetail">
-        <p className="smallSize semiBold from">{this.props.message.from}</p>
-        <p className="subject">{this.props.message.subject}</p>
-        <p className="xsmallSize snippet">{this.props.message.snippet}</p>
+        <p className="smallSize semiBold from">{this.props.message.subject}</p>
+        <p className="subject">{this.props.message.snippet}</p>
+        <p className="xsmallSize snippet">{this.props.message.from}</p>
       </div>
     );
   }
