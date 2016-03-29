@@ -34,8 +34,8 @@ var JobDetails    = React.createClass({
             <div className="jobTags"></div>
             <div className="contactTimeline">
               <div className="contactTimelineHeader">
-                <span className="semiBold regularSize">Email Timeline</span><br/>
-                <span className="seethrough40 xsmallSize">{this.props.job.messages.length + " Messages"}</span>
+                <span className="semiBold regularSize">Contact Timeline</span><br/>
+                <span className="seethrough40 xsmallSize">{/*this.props.job.messages.length +*/ " Messages"}</span>
               </div>
               {messageWidget}
             </div>
